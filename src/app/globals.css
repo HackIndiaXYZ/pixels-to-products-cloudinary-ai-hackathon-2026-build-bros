@@ -1,0 +1,251 @@
+@import "tailwindcss";
+
+/* ── Design tokens ────────────────────────────────────────────────────────── */
+@theme inline {
+  /* Surfaces */
+  --color-background: #F7F6F2;
+  --color-background-alt: #FAFAF7;
+  --color-surface: #FFFFFF;
+  --color-surface-2: #F2F1ED;
+
+  /* Text */
+  --color-ink: #111111;
+  --color-ink-2: #666666;
+  --color-ink-3: #999999;
+  --color-ink-4: #CCCCCC;
+
+  /* Borders */
+  --color-rule: #D8D6D0;
+  --color-rule-strong: #A09C90;
+  --color-rule-light: #E8E6DF;
+
+  /* Severity — all dark, restrained */
+  --color-critical: #8B0000;
+  --color-critical-bg: #FDF2F2;
+  --color-critical-rule: #DCA5A5;
+
+  --color-high: #8A6500;
+  --color-high-bg: #FDF4EE;
+  --color-high-rule: #DDB896;
+
+  --color-medium: #8A6500;
+  --color-medium-bg: #FDFAEE;
+  --color-medium-rule: #D9CA96;
+
+  --color-low: #245C3A;
+  --color-low-bg: #F2FAF4;
+  --color-low-rule: #96C8A5;
+
+  --color-info: #315A78;
+  --color-info-bg: #F2F6FA;
+  --color-info-rule: #96B0C8;
+
+  /* Typography */
+  --font-editorial: Georgia, "Times New Roman", Times, serif;
+  --font-mono: "Courier New", Courier, monospace;
+  --font-ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-ink);
+  font-family: var(--font-ui);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* ── Typography utilities ─────────────────────────────────────────────────── */
+.font-editorial {
+  font-family: var(--font-editorial);
+}
+
+.font-technical {
+  font-family: var(--font-mono);
+}
+
+.font-ui {
+  font-family: var(--font-ui);
+}
+
+/* ── Eyebrow / label ──────────────────────────────────────────────────────── */
+.eyebrow {
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+}
+
+/* ── Editorial headline ───────────────────────────────────────────────────── */
+.headline-xl {
+  font-family: var(--font-editorial);
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+  font-weight: 400;
+  line-height: 1.08;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+
+.headline-lg {
+  font-family: var(--font-editorial);
+  font-size: clamp(1.75rem, 3vw, 2.75rem);
+  font-weight: 400;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  color: var(--color-ink);
+}
+
+.headline-md {
+  font-family: var(--font-editorial);
+  font-size: 1.375rem;
+  font-weight: 400;
+  line-height: 1.3;
+  color: var(--color-ink);
+}
+
+.headline-sm {
+  font-family: var(--font-editorial);
+  font-size: 1.125rem;
+  font-weight: 400;
+  line-height: 1.35;
+  color: var(--color-ink);
+}
+
+/* ── Horizontal rules ─────────────────────────────────────────────────────── */
+.rule {
+  border: none;
+  border-top: 1px solid var(--color-rule);
+  width: 100%;
+}
+
+.rule-strong {
+  border: none;
+  border-top: 1px solid var(--color-rule-strong);
+  width: 100%;
+}
+
+/* ── Code / technical text ────────────────────────────────────────────────── */
+.technical {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--color-ink-2);
+}
+
+/* ── Severity chips ───────────────────────────────────────────────────────── */
+.sev-label {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  display: inline-block;
+  padding: 2px 7px;
+  border-width: 1px;
+  border-style: solid;
+}
+
+.sev-critical {
+  color: var(--color-critical);
+  background-color: var(--color-critical-bg);
+  border-color: var(--color-critical-rule);
+}
+.sev-high {
+  color: var(--color-high);
+  background-color: var(--color-high-bg);
+  border-color: var(--color-high-rule);
+}
+.sev-medium {
+  color: var(--color-medium);
+  background-color: var(--color-medium-bg);
+  border-color: var(--color-medium-rule);
+}
+.sev-low {
+  color: var(--color-low);
+  background-color: var(--color-low-bg);
+  border-color: var(--color-low-rule);
+}
+.sev-info {
+  color: var(--color-info);
+  background-color: var(--color-info-bg);
+  border-color: var(--color-info-rule);
+}
+
+/* ── Finding severity left-border ─────────────────────────────────────────── */
+.finding-critical { border-left: 3px solid var(--color-critical); }
+.finding-high     { border-left: 3px solid var(--color-high); }
+.finding-medium   { border-left: 3px solid var(--color-medium); }
+.finding-low      { border-left: 3px solid var(--color-low); }
+.finding-info     { border-left: 3px solid var(--color-info); }
+
+/* ── Metric block ─────────────────────────────────────────────────────────── */
+.metric-value {
+  font-family: var(--font-editorial);
+  font-size: 2.25rem;
+  font-weight: 400;
+  line-height: 1;
+  color: var(--color-ink);
+}
+
+.metric-label {
+  font-family: var(--font-ui);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--color-ink-3);
+  margin-top: 6px;
+}
+
+/* ── Section header ───────────────────────────────────────────────────────── */
+.section-header {
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-rule);
+  margin-bottom: 24px;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-rule-strong); border-radius: 2px; }
+
+/* ── Animation ────────────────────────────────────────────────────────────── */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-in {
+  animation: fade-in 0.35s ease-out forwards;
+}
+
+.stagger-1 { animation-delay: 0ms; }
+.stagger-2 { animation-delay: 60ms; }
+.stagger-3 { animation-delay: 120ms; }
+.stagger-4 { animation-delay: 180ms; }
+.stagger-5 { animation-delay: 240ms; }
+
+/* ── Focus ────────────────────────────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-ink);
+  outline-offset: 2px;
+}
+
+/* ── Selection ────────────────────────────────────────────────────────────── */
+::selection {
+  background-color: var(--color-ink);
+  color: var(--color-background);
+}
