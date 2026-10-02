@@ -1,68 +1,274 @@
 # SecureFlow AI
+### Cloudinary-powered AI Media Intelligence & Processing Platform
 
-> Cloudinary-powered AI media intelligence and processing platform.
+SecureFlow AI transforms raw media into intelligent, searchable, optimized,
+and reusable assets through one continuous workflow.
 
-[Live Demo](YOUR_VERCEL_URL) · [GitHub Repository](YOUR_REPOSITORY_URL)
+**Upload → Analyze → Process → Transform → Optimize → Save**
 
-## Live Demo
-Check out the live deployment of SecureFlow AI on Vercel:
-[Demo Link placeholder]
+[Live Demo] · [Demo Video] · [GitHub Repository]
 
-## Demo Video
-Watch a full walkthrough of our media pipeline in action:
-[Video Link placeholder]
+Built for the **Pixels to Products — Cloudinary AI Hackathon 2026**
 
-## Hackathon
-Built for the **Pixels to Products — Cloudinary AI Hackathon 2026**.
+**Team Build Bros**
 
-## Problem
-Organizations handle vast amounts of visual evidence and media daily. Traditional dashboards treat media as static files, relying on human analysts to manually tag, crop, review, and extract intelligence. This leads to bottlenecks, missed insights, and inconsistent moderation, leaving analysts without a unified tool to process and reason over media at scale.
+---
 
-## Solution
-SecureFlow AI provides a unified Media Workspace where every piece of ingested evidence is immediately analyzed, tagged, and moderated. It acts as an interactive command center, allowing analysts to instantly apply content-aware smart cropping, background removal, and optimizations using Cloudinary's dynamic transformations, while an AI reasoning engine infers physical and digital risks in real-time.
+## What is SecureFlow AI?
 
-## Why Cloudinary
-Cloudinary acts as the core pipeline engine for SecureFlow AI, removing the need for a fragmented media toolchain. Instead of using disparate services for upload, transformation, and AI tagging, Cloudinary powers every stage from ingestion to optimized delivery.
+SecureFlow AI is a unified media intelligence workspace that combines
+Cloudinary-powered media infrastructure, AI analysis, intelligent
+transformations, optimization, and asset management into one product.
 
-## Core Features
-- **Media Upload:** Scalable and secure uploading of media directly to Cloudinary.
-- **AI Intelligence:** Automated extraction of metadata, tags, and safety states upon ingestion.
-- **Smart Crop:** Content-aware transformations tailored for investigative precision using AI gravity detection.
-- **Background Removal:** Seamless subject isolation via `e_background_removal`.
-- **Optimization:** Intelligent delivery using Cloudinary's `f_auto` and `q_auto` parameters.
-- **Transformations:** Real-time application of CDN-level URL transformations.
-- **Search:** Query capabilities over extensive metadata, AI tags, and inferred findings.
-- **Media Library:** A robust management system for processed assets.
-- **Reports:** Generation of insights from AI reasoning payload.
+Instead of moving media between multiple tools, users can upload an asset,
+understand its contents, process it, optimize it, and save the resulting asset
+from a single workflow.
 
-## Product Workflow
-Upload → Cloudinary → AI analysis → Auto tagging → Moderation → Smart Crop → Background Removal → Optimization → Transformations → Save → Media Library.
+---
 
-## System Architecture
-The system employs an event-driven architecture designed to process media synchronously and asynchronously, separating ingestion, intelligence extraction, and persistence.
-
-## AI Processing Pipeline
-The AI pipeline orchestrates the flow of data from raw pixels to structured intelligence.
+## Core Product Workflow
 
 ```mermaid
-graph TD
-    A[Raw Media Upload] --> B[Cloudinary Ingestion]
-    B --> C{Cloudinary AI Services}
-    C -->|Auto-Tagging| D[Metadata & Context]
-    C -->|Moderation| E[Safety Flags]
-    D --> F[OpenAI Reasoning Engine]
-    E --> F
-    F --> G[Risk & Findings Assessment]
-    G --> H[(Supabase Storage)]
+flowchart LR
+    A[Upload Media] --> B[Cloudinary]
+    B --> C[Inspect Asset]
+
+    C --> D[AI Intelligence]
+
+    D --> D1[Auto Tagging]
+    D --> D2[Content Analysis]
+    D --> D3[Moderation]
+    D --> D4[Metadata]
+
+    D --> E[Processing Studio]
+
+    E --> E1[Smart Crop]
+    E --> E2[Background Removal]
+    E --> E3[Optimization]
+    E --> E4[Transformations]
+
+    E --> F[Before / After Preview]
+    F --> G[Save Asset]
+    G --> H[Media Library]
+    H --> I[Search / Collections / Reports]
 ```
 
-## Cloudinary Integration
-* **Upload:** Utilizes Cloudinary's secure upload mechanisms.
-* **AI Analysis:** Triggers Vision API and auto-tagging on asset creation.
-* **Moderation:** Integrates with Cloudinary moderation capabilities to enforce safety.
-* **Delivery & Transformations:** Applies real-time CDN-level transformations (`e_background_removal`, `c_auto`, `g_auto`, `f_auto`, `q_auto`).
+---
+
+## Why Cloudinary?
+
+Cloudinary is the media infrastructure layer behind SecureFlow AI.
+
+The application uses Cloudinary to support the complete media lifecycle:
+
+| Requirement | Cloudinary Capability | SecureFlow AI |
+|---|---|---|
+| Media Upload | Upload infrastructure | Media Workspace |
+| Media Delivery | CDN / transformed delivery | Asset Preview |
+| AI Analysis | AI content analysis | Intelligence Panel |
+| Auto Tagging | AI tagging | Searchable Metadata |
+| Moderation | Content moderation | Safety Status |
+| Smart Cropping | Content-aware transformations | Smart Crop |
+| Background Removal | AI background removal | Processing Studio |
+| Optimization | Format / quality transformations | Optimization Studio |
+| Transformations | Transformation pipeline | Transform Studio |
+
+Cloudinary therefore acts as the application's media storage, intelligence,
+transformation, and delivery foundation.
+
+---
+
+## AI Media Intelligence
+
+SecureFlow AI doesn't treat an uploaded image as a simple file.
+
+After upload, the application can build an intelligence layer around the
+asset.
+
+### Intelligence Pipeline
+
+Upload
+↓
+Metadata Extraction
+↓
+AI Analysis
+↓
+Auto Tagging
+↓
+Moderation
+↓
+Structured Intelligence
+↓
+Search / Processing / Reporting
+
+| Intelligence | Purpose |
+|---|---|
+| Metadata | Understand the technical asset |
+| AI Tags | Categorize visual content |
+| Confidence | Quantify tag relevance |
+| Moderation | Surface content-safety status |
+| Captioning | Describe visual content when configured |
+| Search Signals | Improve asset discovery |
+
+---
+
+## AI Processing Studio
+
+SecureFlow AI provides focused processing experiences for:
+
+- Smart Crop
+- Background Removal
+- Optimization
+- Transform Studio
+
+```text
+                 PROCESSING STUDIO
+                         |
+        +----------------+----------------+
+        |                |                |
+        v                v                v
+   SMART CROP      BACKGROUND        OPTIMIZATION
+                      REMOVAL
+        |                |                |
+        +----------------+----------------+
+                         |
+                         v
+                  TRANSFORM STUDIO
+                         |
+                         v
+                   DERIVED ASSET
+```
+
+---
+
+## Media Workspace
+
+The Media Workspace is the primary product experience.
+
+It combines the complete asset lifecycle into a single interactive workflow:
+
+### 01 — Upload
+Drag and drop media into the workspace.
+
+### 02 — Inspect
+Review dimensions, format, size, and asset information.
+
+### 03 — Analyze
+Run AI intelligence and review tags, confidence, moderation, and analysis.
+
+### 04 — Process
+Apply Smart Crop, Background Removal, Optimization, or transformations.
+
+### 05 — Preview
+Compare the original and processed output.
+
+### 06 — Save
+Persist the resulting asset into the Media Library.
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant A as SecureFlow AI
+    participant C as Cloudinary
+    participant S as Supabase
+    participant O as OpenAI
+
+    U->>A: Upload media
+    A->>C: Upload asset
+    C-->>A: Asset + metadata
+
+    A->>C: Request AI analysis
+    C-->>A: Intelligence
+
+    A->>O: Application analysis
+    O-->>A: Structured result
+
+    U->>A: Apply transformation
+    A->>C: Transformation request
+    C-->>A: Derived asset
+
+    U->>A: Save
+    A->>S: Persist asset record
+    S-->>A: Saved
+```
+
+---
+
+## Architecture
+
+```mermaid
+flowchart TB
+
+    USER[User]
+
+    subgraph APP[SecureFlow AI]
+        LANDING[Landing]
+        DASH[Dashboard]
+        WORKSPACE[Media Workspace]
+        PROCESS[Processing Studio]
+        LIBRARY[Media Library]
+        SEARCH[Search]
+        REPORTS[Reports]
+    end
+
+    subgraph SERVICES[Application Services]
+        API[Next.js API Layer]
+        AI[AI Analysis]
+        DATA[Persistence Layer]
+    end
+
+    CLOUD[Cloudinary]
+    OPENAI[OpenAI]
+    SUPA[Supabase]
+    VERCEL[Vercel]
+
+    USER --> LANDING
+    USER --> DASH
+    USER --> WORKSPACE
+
+    WORKSPACE --> API
+    PROCESS --> API
+    LIBRARY --> API
+    SEARCH --> API
+    REPORTS --> API
+
+    API --> CLOUD
+    API --> OPENAI
+    API --> SUPA
+
+    CLOUD --> WORKSPACE
+    CLOUD --> PROCESS
+    CLOUD --> LIBRARY
+
+    AI --> OPENAI
+    DATA --> SUPA
+
+    APP --> VERCEL
+```
+
+---
+
+## Feature Overview & Business Value
+
+| Category | Feature | Product Story | Implementation |
+|---|---|---|---|
+| Media | Upload | Ingest media securely directly from the UI | Cloudinary |
+| Intelligence | AI Analysis | Turn static files into structured, understood media intelligence | Cloudinary / OpenAI |
+| Intelligence | Auto Tagging | Make assets instantly discoverable without manual tagging | Cloudinary |
+| Intelligence | Moderation | Maintain platform safety automatically at the ingestion layer | Cloudinary |
+| Processing | Smart Crop | **Eliminate manual reframing by using content-aware transformations to adapt a single asset to different aspect ratios.** | Cloudinary transformations |
+| Processing | Background Removal | **Isolate the visual subject without requiring the user to export the asset to a separate image editor.** | Cloudinary |
+| Processing | Optimization | **Deliver the same source asset in an appropriate format and quality without maintaining multiple manually exported versions.** | Cloudinary |
+| Processing | Transform Studio | Apply dynamic adjustments without leaving the workflow | Cloudinary transformations |
+| Management | Media Library | Centralize all processed, tagged, and analyzed assets | Application + Supabase |
+| Management | Search | Discover assets using AI-generated tags and metadata | Application metadata |
+| UX | Page transitions | Provide a seamless, native-app feel | Framer Motion |
+| Deployment | Production | Scalable global delivery | Vercel |
+
+---
 
 ## Technology Stack
+
 - **Framework:** Next.js 14 (App Router)
 - **Language:** TypeScript
 - **Media & Transformation:** Cloudinary
@@ -70,22 +276,15 @@ graph TD
 - **AI Reasoning:** OpenAI (GPT-4o)
 - **Styling:** Tailwind CSS, Framer Motion
 
+---
+
 ## Security
+
 - Environment variables strictly segregate public and private keys.
 - Supabase Row Level Security (RLS) and Service Role configurations handle sensitive backend persistence.
 - Cloudinary moderation acts as a first line of defense against inappropriate or malicious media content.
 
-## Documentation
-Please refer to the `/documentation` directory for architectural diagrams and expected UX states.
-
-## Team
-
-| Member | Role | GitHub | LinkedIn | Portfolio |
-|---|---|---|---|---|
-| Rishvin Reddy | Product / Engineering | [RishvinReddy](https://github.com/RishvinReddy) | [LinkedIn](https://www.linkedin.com/in/rishvinreddy/?isSelfProfile=false) | [Portfolio](https://rishvinreddy.vercel.app/) |
-| Navari Yashwanth Reddy | Engineering | [YashwanthNavari](https://github.com/YashwanthNavari) | [LinkedIn](https://www.linkedin.com/in/navari-yashwanth-reddy-4a7065357/?isSelfProfile=true) | [Portfolio](https://navariyashwanthreddy.vercel.app/) |
-| Pocharam Gayathri | Engineering | [Gayathri-Pocharam](https://github.com/Gayathri-Pocharam) | [LinkedIn](https://www.linkedin.com/in/gayathripocharam/) | — |
-| Guggilla Yogamruth Reddy | Engineering | [yogamruth](https://github.com/yogamruth) | [LinkedIn](https://www.linkedin.com/in/guggilla-yogamruth-reddy-109033324/?isSelfProfile=false) | [Portfolio](https://yogamruthreddy.vercel.app/) |
+---
 
 ## Installation
 
@@ -96,6 +295,7 @@ Please refer to the `/documentation` directory for architectural diagrams and ex
    ```
 
 ## Environment Variables
+
 Create a `.env.local` file in the root directory and ensure the following variables are set on Vercel:
 
 ```env
@@ -109,5 +309,19 @@ SUPABASE_SERVICE_ROLE_KEY=
 OPENAI_API_KEY=
 ```
 
-## License
-MIT License
+---
+
+## Documentation
+
+Please refer to the `/documentation` directory for architectural diagrams, expected UX states, and the hackathon submission demo script.
+
+---
+
+## Team
+
+| Member | GitHub | LinkedIn | Portfolio |
+|---|---|---|---|
+| Rishvin Reddy | [RishvinReddy](https://github.com/RishvinReddy) | [LinkedIn](https://www.linkedin.com/in/rishvinreddy/?isSelfProfile=false) | [Portfolio](https://rishvinreddy.vercel.app/) |
+| Navari Yashwanth Reddy | [YashwanthNavari](https://github.com/YashwanthNavari) | [LinkedIn](https://www.linkedin.com/in/navari-yashwanth-reddy-4a7065357/?isSelfProfile=true) | [Portfolio](https://navariyashwanthreddy.vercel.app/) |
+| Pocharam Gayathri | [Gayathripocharam](https://github.com/Gayathripocharam) | [LinkedIn](https://www.linkedin.com/in/gayathripocharam/) | [Portfolio](https://gayathripocharam.github.io/) |
+| Guggilla Yogamruth Reddy | [YogamruthReddy](https://github.com/YogamruthReddy) | [LinkedIn](https://www.linkedin.com/in/guggilla-yogamruth-reddy-109033324/?isSelfProfile=false) | — |

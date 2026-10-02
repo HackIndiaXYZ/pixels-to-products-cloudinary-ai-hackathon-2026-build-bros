@@ -64,9 +64,9 @@ const TEAM_MEMBERS = [
     roles: "Engineering · Development · Research",
     degree: "B.Tech CSE",
     linkedin: "https://www.linkedin.com/in/gayathripocharam/",
-    portfolio: null,
-    github: "https://github.com/Gayathri-Pocharam",
-    email: "mailto:gayathri.pocharam1603@gmail.com"
+    portfolio: "https://gayathripocharam.github.io/",
+    github: "https://github.com/Gayathripocharam",
+    email: "mailto:pocharamgayathri@gmail.com"
   },
   {
     initials: "GY",
@@ -74,9 +74,9 @@ const TEAM_MEMBERS = [
     roles: "Engineering · Development",
     degree: "B.Tech CSE",
     linkedin: "https://www.linkedin.com/in/guggilla-yogamruth-reddy-109033324/?isSelfProfile=false",
-    portfolio: "https://yogamruthreddy.vercel.app/",
-    github: "https://github.com/yogamruth",
-    email: "mailto:yogamruth2005@gmail.com"
+    portfolio: null,
+    github: "https://github.com/YogamruthReddy",
+    email: "mailto:guggilla.yogamruthreddy4422@gmail.com"
   }
 ];
 
