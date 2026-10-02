@@ -1,4 +1,6 @@
-import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { PageHeader } from "@/components/layout/PageHeader";
+import { CheckCircle2 } from "lucide-react";
 
 export const metadata = { title: "System Status - SecureFlow AI" };
 
@@ -34,34 +36,30 @@ export default function StatusPage() {
   );
 
   return (
-    <div className="px-8 lg:px-12 pt-8 pb-24 max-w-[1400px] mx-auto w-full">
-      <Breadcrumbs items={[
-        { label: "PIPELINE" },
-        { label: "STATUS" }
-      ]} />
+    <PageContainer>
+      <PageHeader 
+        category="PIPELINE"
+        title="System Status"
+        description="Real-time operational status of all media intelligence and processing engines."
+        secondaryActions={
+          <div className="flex flex-col items-end gap-1">
+            <div className="font-ui text-[10px] font-semibold tracking-wider text-gray-500 uppercase">
+              LAST REFRESH
+            </div>
+            <div className="font-editorial text-sm font-medium text-gray-900">
+              {timestamp}
+            </div>
+          </div>
+        }
+      />
 
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 border-b border-[--color-rule] pb-6">
-        <div>
-          <h1 className="font-editorial text-3xl tracking-wide uppercase text-[--color-ink] mb-3">
-            System Status
-          </h1>
-          <div className="flex items-center gap-2 font-technical text-sm tracking-widest uppercase text-[--color-ink]">
-            <span className="w-2 h-2 bg-[--color-low] rounded-full"></span>
-            OPERATIONAL
-          </div>
+      <div className="mb-12 bg-white/70 backdrop-blur-sm border border-gray-200/60 rounded-[20px] shadow-[0_2px_8px_rgba(15,23,42,0.02)] overflow-hidden p-6">
+        <div className="flex items-center gap-2 font-ui text-[11px] font-semibold tracking-wider uppercase text-emerald-600 mb-6">
+          <span className="w-2 h-2 bg-emerald-500 rounded-full animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
+          OPERATIONAL
         </div>
-        <div className="flex flex-col items-start md:items-end gap-2 text-right">
-          <div className="font-technical text-[10px] tracking-widest text-[--color-ink-4] uppercase mb-1">
-            LAST REFRESH
-          </div>
-          <div className="font-technical text-sm text-[--color-ink]">
-            {timestamp}
-          </div>
-        </div>
-      </div>
-
-      <div className="border border-[--color-rule] bg-[--color-surface] p-8 mb-12">
-        <div className="grid grid-cols-12 font-technical text-[10px] tracking-widest text-[--color-ink-4] uppercase border-b border-[--color-rule-strong] pb-2 mb-2 px-2">
+        
+        <div className="grid grid-cols-12 font-ui text-[10px] font-semibold tracking-wider text-gray-400 uppercase border-b border-gray-200/60 pb-3 mb-3 px-2">
           <div className="col-span-6">SERVICE</div>
           <div className="col-span-3">STATUS</div>
           <div className="col-span-3 text-right">LATENCY</div>
@@ -75,10 +73,9 @@ export default function StatusPage() {
         <ServiceRow service="OpenAI" status={isOpenAIConfigured ? "HEALTHY" : "OFFLINE"} latency={isOpenAIConfigured ? "304 ms" : "—"} type={isOpenAIConfigured ? "healthy" : "offline"} />
       </div>
 
-      <div className="border border-[--color-rule] bg-[--color-surface] p-8">
-        <p className="eyebrow mb-2">LAST PIPELINE</p>
-        <hr className="rule-strong mb-6" />
-
+      <div className="bg-white/70 backdrop-blur-sm border border-gray-200/60 rounded-[20px] shadow-[0_2px_8px_rgba(15,23,42,0.02)] p-6">
+        <p className="font-ui text-[11px] font-semibold tracking-wider text-gray-500 uppercase mb-4">LAST PIPELINE</p>
+        
         <div className="space-y-1">
           <PipelineCheck step="Upload" />
           <PipelineCheck step="Cloudinary processing" />
@@ -88,6 +85,6 @@ export default function StatusPage() {
           <PipelineCheck step="Report generation" isLast={true} />
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

@@ -11,6 +11,7 @@ import {
   ImageIcon, CheckCircle2,
 } from "lucide-react";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
@@ -474,15 +475,52 @@ export function MediaWorkspaceStudio({
                       <img src={previewUrl} alt="Preview" className="max-w-full max-h-64 object-contain" />
                     )}
                     {uploadProgress !== null && (
-                      <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white/80 backdrop-blur-sm">
-                        <Loader2 className="w-8 h-8 text-blue-600 animate-spin" />
-                        <div className="w-40">
-                          <div className="h-1.5 bg-[--color-rule] rounded-full overflow-hidden">
-                            <div className="h-full bg-blue-600 rounded-full transition-all duration-200" style={{ width: `${uploadProgress}%` }} />
+                      <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-white/95 backdrop-blur-md"
+                      >
+                        <div className="flex flex-col items-center gap-4">
+                          <div className="relative flex items-center justify-center">
+                            <motion.div
+                              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+                              transition={{ duration: 2, repeat: Infinity }}
+                              className="absolute w-24 h-24 bg-blue-100 rounded-full blur-xl"
+                            />
+                            <div className="relative w-16 h-16 bg-white border border-blue-100 shadow-[0_8px_30px_-4px_rgba(59,130,246,0.15)] rounded-[16px] flex items-center justify-center z-10">
+                              <Upload className="w-6 h-6 text-blue-600" />
+                            </div>
                           </div>
-                          <p className="text-xs font-bold text-blue-600 text-center mt-1">{uploadProgress}%</p>
+                          <h3 className="font-editorial text-lg font-medium text-gray-900">
+                            Uploading to Cloudinary
+                          </h3>
                         </div>
-                      </div>
+
+                        <div className="w-64 space-y-2">
+                          <div className="flex justify-between font-ui text-[11px] font-medium text-gray-500">
+                            <span>Processing media...</span>
+                            <span className="tabular-nums text-blue-600 font-bold">{uploadProgress}%</span>
+                          </div>
+                          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                            <motion.div 
+                              className="h-full bg-gradient-to-r from-blue-500 to-violet-500 rounded-full relative" 
+                              initial={{ width: 0 }}
+                              animate={{ width: `${uploadProgress}%` }}
+                              transition={{ duration: 0.2 }}
+                            >
+                              <div className="absolute inset-0 bg-white/30" style={{ animation: "shimmer 2s infinite linear", backgroundImage: "linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)" }} />
+                            </motion.div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-4 mt-2 font-ui text-[10px] text-gray-400">
+                          <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3 h-3 text-emerald-500" /> Validated</span>
+                          <span className="w-1 h-1 rounded-full bg-gray-200" />
+                          <span className="flex items-center gap-1.5 text-blue-500 font-bold"><Loader2 className="w-3 h-3 animate-spin" /> Uploading</span>
+                          <span className="w-1 h-1 rounded-full bg-gray-200" />
+                          <span className="flex items-center gap-1.5"><Brain className="w-3 h-3" /> Waiting for AI</span>
+                        </div>
+                      </motion.div>
                     )}
                   </div>
                   {uploadError && (

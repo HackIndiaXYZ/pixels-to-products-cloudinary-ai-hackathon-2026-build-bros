@@ -2,39 +2,35 @@
 
 @theme inline {
   /* Surfaces */
-  --color-background: #F3F4F6;
+  --color-background: #FAFAFA;
   --color-surface: #FFFFFF;
-  --color-surface-2: #F9FAFB;
-  --color-surface-3: #F3F4F6;
+  --color-surface-2: #F8FAFC;
+  --color-surface-3: #F1F5F9;
 
   /* Text */
-  --color-ink: #111827;
-  --color-ink-2: #374151;
-  --color-ink-3: #6B7280;
-  --color-ink-4: #9CA3AF;
+  --color-ink: #0F172A;
+  --color-ink-2: #334155;
+  --color-ink-3: #64748B;
+  --color-ink-4: #94A3B8;
 
   /* Borders */
-  --color-rule: #E5E7EB;
-  --color-rule-light: #F3F4F6;
-
-  /* Primary Brand Palette (Reference Green) */
-  --color-primary: #175e3a; /* Dark green from ref */
-  --color-primary-light: #2da461; /* Lighter green */
-  --color-primary-bg: #e6f4ea; /* Very light green tint */
+  --color-rule: #E2E8F0;
+  --color-rule-light: #F1F5F9;
   
   /* Semantic */
   --color-healthy: #10B981;
   --color-warning: #F59E0B;
   --color-critical: #EF4444;
-  --color-active: #3B82F6;
+  --color-active: #2563EB;
 
-  /* Typography */
-  --font-sans: "Inter", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
-  --font-mono: "JetBrains Mono", monospace;
+  /* Typography mapping to next/font/google */
+  --font-ui: var(--font-sans);
+  --font-editorial: var(--font-editorial);
+  --font-technical: var(--font-mono);
 
   /* Shadows (Soft, modern SaaS) */
-  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
-  --shadow-floating: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+  --shadow-card: 0 8px 30px -4px rgba(15, 23, 42, 0.04);
+  --shadow-floating: 0 20px 50px -10px rgba(15, 23, 42, 0.08);
   
   /* Radii */
   --radius-sm: 8px;

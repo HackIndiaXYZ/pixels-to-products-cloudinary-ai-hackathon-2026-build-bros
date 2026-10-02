@@ -1,10 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import { notFound } from "next/navigation";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ExternalLink } from "lucide-react";
 import Link from "next/link";
 import { CldImage } from "next-cloudinary";
 import { ReportActions } from "./ReportActions";
-import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata = {
   title: "Evidence Report - SecureFlow AI",
@@ -52,15 +53,14 @@ export default async function EvidenceReportPage({ params }: { params: { id: str
   const isSafe = !isFlagged && !isReview;
 
   return (
-    <div className="max-w-[1400px] mx-auto space-y-6">
-      <div className="flex items-center justify-between mb-2">
-        <Link href="/dashboard/evidence" className="text-xs font-bold text-[--color-ink-3] hover:text-[--color-primary] flex items-center gap-1 transition-colors">
-          <ArrowLeft className="w-3 h-3" /> BACK TO MEDIA LIBRARY
-        </Link>
-        <ReportActions id={id} isArchived={analysis.is_archived} />
-      </div>
-
-      <h1 className="text-3xl font-bold text-[--color-ink] tracking-tight mb-8">Media Intelligence</h1>
+    <PageContainer>
+      <PageHeader 
+        category="MEDIA INTELLIGENCE"
+        title={analysis.title || "Evidence Report"}
+        description="Detailed AI analysis and transformations."
+        backLink="/dashboard/evidence"
+        primaryAction={<ReportActions id={id} isArchived={analysis.is_archived} />}
+      />
 
       <div className="grid grid-cols-1 lg:grid-cols-[1fr_350px] gap-8">
         
@@ -172,6 +172,6 @@ export default async function EvidenceReportPage({ params }: { params: { id: str
           
         </div>
       </div>
-    </div>
+    </PageContainer>
   );
 }

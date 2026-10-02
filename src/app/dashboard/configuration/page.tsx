@@ -1,4 +1,5 @@
-import { Breadcrumbs } from "@/components/ui/breadcrumbs";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 export const metadata = { title: "Configuration - SecureFlow AI" };
 
@@ -41,32 +42,24 @@ export default function ConfigurationPage() {
   };
 
   return (
-    <div className="px-8 lg:px-12 pt-8 pb-24 max-w-[1400px] mx-auto w-full">
-      <Breadcrumbs items={[
-        { label: "SYSTEM" },
-        { label: "CONFIGURATION" }
-      ]} />
-
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-12 border-b border-[--color-rule] pb-6">
-        <div>
-          <h1 className="font-editorial text-3xl tracking-wide uppercase text-[--color-ink] mb-3">
-            System Configuration
-          </h1>
-          <p className="font-ui text-sm text-[--color-ink-2] leading-relaxed">
-            Provider settings, integrations, and environment controls.
-          </p>
-        </div>
-        <div className="flex flex-col items-start md:items-end gap-2 text-right">
-          <div className="font-technical text-[10px] tracking-widest text-[--color-ink-4] uppercase mb-1">
-            ENVIRONMENT
+    <PageContainer>
+      <PageHeader 
+        category="SYSTEM"
+        title="System Configuration"
+        description="Provider settings, integrations, and environment controls."
+        secondaryActions={
+          <div className="flex flex-col items-end gap-1">
+            <div className="font-ui text-[10px] font-semibold tracking-wider text-gray-500 uppercase">
+              ENVIRONMENT
+            </div>
+            <div className="font-editorial text-sm font-medium text-gray-900">
+              PRODUCTION ENV
+            </div>
           </div>
-          <div className="font-technical text-sm text-[--color-ink]">
-            PRODUCTION ENV
-          </div>
-        </div>
-      </div>
+        }
+      />
 
-      <div className="border border-[--color-rule] bg-[--color-surface] p-8 lg:p-12">
+      <div className="bg-white/70 backdrop-blur-sm border border-gray-200/60 rounded-[20px] shadow-[0_2px_8px_rgba(15,23,42,0.02)] p-8 lg:p-10 mb-6">
         <ConfigSection title="CLOUDINARY">
           <ConfigItem label="Cloud Name" status={isCloudinaryConfigured ? "CONFIGURED" : "MISSING"} type={isCloudinaryConfigured ? "configured" : "unconfigured"} />
           <ConfigItem label="Upload Preset" status={isCloudinaryUploadPreset ? "CONFIGURED" : "MISSING"} type={isCloudinaryUploadPreset ? "configured" : "unconfigured"} />
@@ -93,9 +86,9 @@ export default function ConfigurationPage() {
         </ConfigSection>
       </div>
       
-      <p className="mt-8 font-technical text-[10px] text-[--color-ink-4] uppercase tracking-widest text-center">
+      <p className="font-ui text-[10px] text-gray-400 uppercase tracking-wider text-center font-semibold">
         Note: Environment secrets and keys are explicitly excluded from this dashboard for security.
       </p>
-    </div>
+    </PageContainer>
   );
 }

@@ -19,6 +19,7 @@ import {
   Settings,
   Sparkles,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 type NavItem = {
   name: string;
@@ -160,13 +161,13 @@ export function SidebarNavigation({
   ];
 
   return (
-    <nav className="flex-1 overflow-y-auto px-3 py-2 space-y-5">
+    <nav className="flex-1 overflow-y-auto px-4 py-4 space-y-6">
       {navGroups.map((group) => (
         <div key={group.label}>
-          <p className="text-[10px] font-bold text-[--color-ink-4] uppercase tracking-widest px-2 mb-1.5">
+          <p className="font-technical text-[10px] font-bold text-gray-400 uppercase tracking-widest px-2 mb-2">
             {group.label}
           </p>
-          <div className="space-y-0.5">
+          <div className="space-y-1">
             {group.items.map((item) => {
               const active = isActive(item.path, item.matchPaths);
               const Icon = item.icon;
@@ -176,17 +177,31 @@ export function SidebarNavigation({
                   <Link
                     key={item.name}
                     href={item.path}
-                    className={`flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold transition-all group ${
-                      active
-                        ? "bg-gradient-to-r from-blue-600 to-violet-600 text-white shadow-md shadow-blue-200"
-                        : "bg-gradient-to-r from-blue-50 to-violet-50 text-blue-700 border border-blue-200 hover:from-blue-100 hover:to-violet-100"
-                    }`}
+                    className="relative flex items-center justify-between px-3 py-2.5 rounded-[14px] text-xs font-ui font-medium transition-all group overflow-hidden hover:-translate-y-0.5 active:scale-[0.98]"
                   >
-                    <div className="flex items-center gap-2.5">
-                      <Icon className="w-3.5 h-3.5 flex-shrink-0" />
+                    {active ? (
+                      <motion.div
+                        layoutId="active-sidebar-bg"
+                        className="absolute inset-0 bg-gradient-to-r from-blue-50/80 to-violet-50/80 rounded-[14px] border border-blue-100/50"
+                        transition={{ type: "spring" as any, stiffness: 300, damping: 24 }}
+                      />
+                    ) : (
+                      <div className="absolute inset-0 bg-gray-50/50 border border-gray-100/50 rounded-[14px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                    )}
+                    
+                    {active && (
+                      <motion.div 
+                        layoutId="active-sidebar-indicator"
+                        className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-gradient-to-b from-blue-500 to-violet-500 rounded-r-full"
+                        transition={{ type: "spring" as any, stiffness: 300, damping: 24 }}
+                      />
+                    )}
+
+                    <div className={`relative z-10 flex items-center gap-2.5 ${active ? 'text-blue-700 font-semibold' : 'text-gray-600 group-hover:text-gray-900'}`}>
+                      <Icon className={`w-4 h-4 flex-shrink-0 transition-transform ${active ? 'text-blue-600' : 'text-gray-400 group-hover:text-blue-500 group-hover:scale-110'}`} />
                       <span>{item.name}</span>
                     </div>
-                    <span className="text-[9px] font-bold opacity-70">NEW</span>
+                    <span className="relative z-10 font-technical text-[9px] font-bold tracking-widest bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded-[6px]">NEW</span>
                   </Link>
                 );
               }
@@ -195,18 +210,32 @@ export function SidebarNavigation({
                 <Link
                   key={item.name}
                   href={item.path}
-                  className={`flex items-center justify-between px-3 py-2 rounded-lg text-xs font-semibold transition-all group ${
-                    active
-                      ? "bg-blue-50 text-blue-700 border-l-2 border-blue-500 pl-[10px]"
-                      : "text-[--color-ink-3] hover:text-[--color-ink] hover:bg-[--color-surface-2] border-l-2 border-transparent"
-                  }`}
+                  className="relative flex items-center justify-between px-3 py-2.5 rounded-[14px] text-xs font-ui font-medium transition-all group hover:-translate-y-[1px] active:scale-[0.98]"
                 >
-                  <div className="flex items-center gap-2.5">
+                  {active ? (
+                    <motion.div
+                      layoutId="active-sidebar-bg"
+                      className="absolute inset-0 bg-blue-50/60 rounded-[14px]"
+                      transition={{ type: "spring" as any, stiffness: 300, damping: 24 }}
+                    />
+                  ) : (
+                    <div className="absolute inset-0 bg-gray-50/50 rounded-[14px] opacity-0 group-hover:opacity-100 transition-opacity" />
+                  )}
+                  
+                  {active && (
+                    <motion.div 
+                      layoutId="active-sidebar-indicator"
+                      className="absolute left-0 top-1.5 bottom-1.5 w-1 bg-blue-600 rounded-r-full"
+                      transition={{ type: "spring" as any, stiffness: 300, damping: 24 }}
+                    />
+                  )}
+
+                  <div className={`relative z-10 flex items-center gap-2.5 ${active ? 'text-blue-700 font-semibold pl-1' : 'text-gray-600 group-hover:text-gray-900'}`}>
                     <Icon
-                      className={`w-3.5 h-3.5 flex-shrink-0 ${
+                      className={`w-4 h-4 flex-shrink-0 transition-transform ${
                         active
                           ? "text-blue-600"
-                          : "text-[--color-ink-4] group-hover:text-[--color-ink-3]"
+                          : "text-gray-400 group-hover:text-gray-900 group-hover:scale-110"
                       }`}
                     />
                     <span>{item.name}</span>
@@ -215,10 +244,10 @@ export function SidebarNavigation({
                     item.count !== undefined &&
                     item.count > 0 && (
                       <span
-                        className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full tabular-nums ${
+                        className={`relative z-10 font-technical text-[10px] font-bold px-2 py-0.5 rounded-[8px] tabular-nums ${
                           active
-                            ? "bg-blue-100 text-blue-700"
-                            : "bg-[--color-surface-2] text-[--color-ink-4]"
+                            ? "bg-white/80 text-blue-700 shadow-sm border border-blue-100"
+                            : "bg-gray-100 text-gray-500"
                         }`}
                       >
                         {item.count}

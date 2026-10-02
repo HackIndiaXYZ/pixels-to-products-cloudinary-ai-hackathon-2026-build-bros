@@ -25,10 +25,10 @@ export const SecurityAnalysisResultSchema = z.object({
     rationale: z.string()
   })),
   risk_score: z.number().nullable(),
-  risk_status: z.string().nullable().optional(),
-  analysis_confidence: z.string().optional(),
+  risk_status: z.string().nullable(),
+  analysis_confidence: z.string().nullable(),
   overall_severity: z.enum(["critical", "high", "medium", "low", "info"]),
-  model: z.string().optional()
+  model: z.string().nullable()
 });
 
 export type SecurityAnalysisResult = z.infer<typeof SecurityAnalysisResultSchema>;

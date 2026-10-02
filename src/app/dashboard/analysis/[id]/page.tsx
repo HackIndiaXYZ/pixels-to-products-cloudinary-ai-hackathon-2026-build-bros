@@ -8,6 +8,8 @@ import { AnalysisSummary } from "@/components/analysis/AnalysisSummary";
 import { FindingsList } from "@/components/analysis/FindingsList";
 import { formatDateTime } from "@/lib/utils";
 import type { AnalysisResult } from "@/types";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { PageHeader } from "@/components/layout/PageHeader";
 
 interface PageProps { params: Promise<{ id: string }>; }
 
@@ -34,49 +36,20 @@ export default async function AnalysisResultPage({ params }: PageProps) {
   const analysis = data as AnalysisResult;
 
   return (
-    <div className="px-10 py-10 max-w-4xl mx-auto">
-
-      {/* Back */}
-      <Link href="/dashboard">
-        <Button variant="ghost" size="sm" className="mb-6 -ml-2">
-          <ArrowLeft className="w-3.5 h-3.5" />
-          Overview
-        </Button>
-      </Link>
-
-      {/* ── Report header ─────────────────────────────────────────────────── */}
-      <div
-        className="pb-6 mb-0"
-        style={{ borderBottom: "1px solid var(--color-rule-strong)" }}
-      >
-        <p className="eyebrow mb-4">SECUREFLOW AI — SECURITY ANALYSIS</p>
-        <h1
-          className="mb-3"
-          style={{
-            fontFamily: "var(--font-editorial)",
-            fontSize: "1.75rem",
-            lineHeight: "1.2",
-            color: "var(--color-ink)",
-          }}
-        >
-          {analysis.title}
-        </h1>
-        <div className="flex flex-wrap items-center gap-4">
-          {analysis.detected_type_label && (
-            <span className="font-technical text-xs" style={{ color: "var(--color-ink-3)" }}>
-              DETECTED — {analysis.detected_type_label.toUpperCase()}
-            </span>
-          )}
-          <span className="font-technical text-xs" style={{ color: "var(--color-ink-4)" }}>
-            {formatDateTime(analysis.created_at)}
-          </span>
-          {analysis.overall_severity && <SeverityBadge severity={analysis.overall_severity} />}
-        </div>
-      </div>
+    <PageContainer>
+      <PageHeader 
+        category="SECURITY ANALYSIS"
+        title={analysis.title}
+        description={`Detected: ${analysis.detected_type_label?.toUpperCase() || 'UNKNOWN'} | Created: ${formatDateTime(analysis.created_at)}`}
+        backLink="/dashboard/history"
+        primaryAction={
+          analysis.overall_severity && <SeverityBadge severity={analysis.overall_severity} />
+        }
+      />
 
       {/* ── Analysis content ──────────────────────────────────────────────── */}
       {analysis.status === "completed" ? (
-        <div className="animate-in stagger-1">
+        <div className="animate-in stagger-1 bg-white/70 backdrop-blur-sm border border-gray-200/60 rounded-[20px] shadow-[0_2px_8px_rgba(15,23,42,0.02)] p-8">
           <AnalysisSummary analysis={analysis} />
 
           {analysis.findings?.length > 0 && (
@@ -86,9 +59,9 @@ export default async function AnalysisResultPage({ params }: PageProps) {
           )}
 
           {/* Footer rule */}
-          <div className="mt-10 pt-6" style={{ borderTop: "1px solid var(--color-rule)" }}>
+          <div className="mt-10 pt-6 border-t border-gray-200/60">
             <div className="flex items-center justify-between">
-              <p className="font-technical text-xs" style={{ color: "var(--color-ink-4)" }}>
+              <p className="font-ui text-[10px] font-semibold text-gray-400 uppercase tracking-wider">
                 SECUREFLOW AI — AI SECURITY INTELLIGENCE ENGINE
               </p>
               <Link href="/dashboard/analysis/new">
@@ -98,19 +71,19 @@ export default async function AnalysisResultPage({ params }: PageProps) {
           </div>
         </div>
       ) : analysis.status === "analyzing" ? (
-        <div className="py-24 text-center">
-          <p className="eyebrow mb-4" style={{ color: "var(--color-ink-4)" }}>ANALYZING</p>
-          <p className="font-editorial text-xl mb-2" style={{ color: "var(--color-ink-2)" }}>
+        <div className="py-24 text-center bg-white/70 backdrop-blur-sm border border-gray-200/60 rounded-[20px] shadow-[0_2px_8px_rgba(15,23,42,0.02)]">
+          <p className="font-ui text-[11px] font-semibold text-gray-400 uppercase tracking-wider mb-4">ANALYZING</p>
+          <p className="font-editorial text-xl mb-2 text-gray-800">
             Detecting input type and running security analysis…
           </p>
-          <p className="font-technical text-xs" style={{ color: "var(--color-ink-4)" }}>
+          <p className="font-ui text-xs text-gray-500">
             This usually takes 10–30 seconds. Refresh to check progress.
           </p>
         </div>
       ) : (
-        <div className="py-24 text-center">
-          <p className="eyebrow mb-4" style={{ color: "var(--color-critical)" }}>ANALYSIS FAILED</p>
-          <p className="font-editorial text-xl mb-6" style={{ color: "var(--color-ink-2)" }}>
+        <div className="py-24 text-center bg-white/70 backdrop-blur-sm border border-gray-200/60 rounded-[20px] shadow-[0_2px_8px_rgba(15,23,42,0.02)]">
+          <p className="font-ui text-[11px] font-semibold text-red-500 uppercase tracking-wider mb-4">ANALYSIS FAILED</p>
+          <p className="font-editorial text-xl mb-6 text-gray-800">
             Something went wrong during analysis.
           </p>
           <Link href="/dashboard/analysis/new">
@@ -118,6 +91,6 @@ export default async function AnalysisResultPage({ params }: PageProps) {
           </Link>
         </div>
       )}
-    </div>
+    </PageContainer>
   );
 }

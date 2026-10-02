@@ -46,6 +46,7 @@ export function runLocalRulesProvider(payload: EnginePayload): SecurityAnalysisR
     risk_score: null,
     risk_status: "insufficient_evidence",
     analysis_confidence: "limited",
+    model: "local-rules",
     overall_severity: "info",
     observations,
     potential_risks: [],
