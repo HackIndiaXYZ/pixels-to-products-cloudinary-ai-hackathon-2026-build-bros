@@ -6,7 +6,7 @@ import {
   Upload, Crop, Layers, Zap, Wand2, Brain, ShieldCheck,
   Check, RotateCcw, FlipHorizontal, FlipVertical,
   Save, ArrowRight, Loader2, AlertCircle, X,
-  Sparkles, Eye, Copy, ExternalLink,
+  Sparkles, Eye, Copy, ExternalLink, Search,
   FileImage, Tag, ZoomIn, Settings, ChevronRight,
   ImageIcon, CheckCircle2,
 } from "lucide-react";
@@ -336,803 +336,493 @@ export function MediaWorkspaceStudio({
   // RENDER
   // ─────────────────────────────────────────────────────────────────────────
 
+  
+  // Global workflow steps mapping
+  const steps = [
+    { num: "01", title: "Upload", desc: asset ? "Media received" : "Add your media", status: asset ? "done" : stage === "upload" ? "current" : "pending" },
+    { num: "02", title: "Analyze", desc: intel ? "AI intelligence" : "Extract metadata", status: intel ? "done" : stage === "inspect" ? "current" : asset ? "pending" : "locked" },
+    { num: "03", title: "Process", desc: "Transform the asset", status: ["smart-crop","crop","bg-removal","optimize","transform"].includes(stage) ? "current" : intel ? "pending" : "locked" },
+    { num: "04", title: "Export", desc: "Save & share", status: stage === "output" ? "current" : intel ? "pending" : "locked" },
+  ];
+
+  const DockItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
+    <button 
+      onClick={onClick}
+      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+        active 
+          ? "bg-slate-800 text-white shadow-md" 
+          : "bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+      }`}
+    >
+      {icon} {label}
+    </button>
+  );
+
   return (
-    <div className="flex h-[calc(100vh-120px)] min-h-[600px] bg-white rounded-2xl border border-[--color-rule] shadow-sm overflow-hidden">
-
-      {/* ══ LEFT: Tool navigation ══════════════════════════════════════════════ */}
-      <aside className="w-52 flex-shrink-0 flex flex-col border-r border-[--color-rule] bg-[--color-surface-2]">
-        <div className="px-3 py-4 border-b border-[--color-rule]">
-          <p className="text-[9px] font-bold uppercase tracking-widest text-[--color-ink-4]">Media Workspace</p>
-        </div>
-
-        <nav className="flex-1 overflow-y-auto p-2 space-y-1">
-          {(() => {
-            let lastGroup = "";
-            return STAGES.map((s) => {
-              const isDisabled = s.requiresAsset && !asset;
-              const isActive = stage === s.id;
-              const Icon = s.icon;
-              const groupHeader = s.group !== undefined && s.group !== lastGroup
-                ? (lastGroup = s.group, s.group)
-                : (lastGroup = lastGroup, null);
-
-              return (
-                <div key={s.id}>
-                  {groupHeader !== null && groupHeader !== "" && (
-                    <p className="text-[8px] font-bold uppercase tracking-widest text-[--color-ink-4] px-2 pt-3 pb-1">
-                      {groupHeader}
-                    </p>
-                  )}
-                  <button
-                    disabled={isDisabled}
-                    onClick={() => !isDisabled && setStage(s.id)}
-                    className={`w-full flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-xs font-semibold transition-all ${
-                      isActive
-                        ? "bg-blue-600 text-white shadow-sm"
-                        : isDisabled
-                        ? "text-[--color-ink-4] opacity-40 cursor-not-allowed"
-                        : "text-[--color-ink-3] hover:bg-white hover:text-[--color-ink] hover:shadow-sm"
-                    }`}
-                  >
-                    <Icon className="w-3.5 h-3.5 flex-shrink-0" />
-                    <span className="truncate">{s.label}</span>
-                    {isActive && <ChevronRight className="w-3 h-3 ml-auto flex-shrink-0" />}
-                  </button>
-                </div>
-              );
-            });
-          })()}
-        </nav>
-
-        {/* Asset info footer */}
-        {asset && (
-          <div className="p-3 border-t border-[--color-rule] bg-white">
-            <p className="text-[8px] font-bold uppercase tracking-widest text-[--color-ink-4] mb-1">Asset</p>
-            <p className="text-[10px] font-mono text-[--color-ink] truncate">{asset.publicId}</p>
-            <p className="text-[9px] text-[--color-ink-4] mt-0.5">
-              {fmt(asset.bytes)} · {asset.format.toUpperCase()}
-              {asset.width && asset.height ? ` · ${asset.width}×${asset.height}` : ""}
-            </p>
-          </div>
-        )}
-      </aside>
-
-      {/* ══ CENTER: Canvas ════════════════════════════════════════════════════ */}
-      <div className="flex-1 flex flex-col overflow-hidden bg-[--color-surface-2] min-w-0">
-
-        {/* Canvas toolbar */}
-        <div className="flex items-center justify-between px-4 py-2.5 border-b border-[--color-rule] bg-white flex-shrink-0">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-[--color-ink]">
-              {STAGES.find(s => s.id === stage)?.label ?? "Canvas"}
-            </span>
-            {asset && (
-              <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded-full border border-emerald-200">
-                ● Cloudinary
-              </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            {asset && (
-              <>
-                <button
-                  onClick={resetTransform}
-                  className="flex items-center gap-1 text-[10px] font-bold text-[--color-ink-3] hover:text-[--color-ink] transition-colors"
-                >
-                  <RotateCcw className="w-3 h-3" /> Reset
-                </button>
-                <button
-                  onClick={resetAll}
-                  className="flex items-center gap-1 text-[10px] font-bold text-red-400 hover:text-red-600 transition-colors"
-                >
-                  <X className="w-3 h-3" /> New Upload
-                </button>
-              </>
-            )}
+    <div 
+      className="flex flex-col h-[calc(100vh-64px)] min-h-[700px] bg-[#F7F8FA] rounded-2xl border border-[rgba(15,23,42,0.08)] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden"
+      onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+      onDragLeave={() => setIsDragging(false)}
+      onDrop={(e) => { 
+        e.preventDefault(); setIsDragging(false); 
+        if (stage === "upload" && !pendingFile) {
+           const f = e.dataTransfer.files[0]; if (f) handleFile(f);
+        }
+      }}
+    >
+      {/* ── Global Header ── */}
+      <header className="h-14 flex items-center justify-between px-6 bg-white border-b border-[rgba(15,23,42,0.08)] shrink-0 z-20 relative">
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard" className="text-[11px] font-bold text-slate-400 hover:text-slate-700 transition-colors">← Workspace</Link>
+          <div className="h-4 w-px bg-slate-200"></div>
+          <div>
+            <h1 className="text-xs font-bold text-slate-800 uppercase tracking-widest">Media Workspace</h1>
+            <p className="text-[9px] text-slate-500">Transform and understand your media</p>
           </div>
         </div>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-full px-3 py-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span className="text-[10px] font-bold text-slate-600">All systems operational</span>
+          </div>
+          <button className="flex items-center gap-2 text-[11px] font-bold text-slate-500 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-lg hover:bg-slate-100 transition-colors">
+             <Search className="w-3.5 h-3.5" /> ⌘ K
+          </button>
+        </div>
+      </header>
 
-        {/* Main canvas area */}
-        <div className="flex-1 overflow-auto p-6 flex flex-col items-center justify-center">
-
-          {/* ── UPLOAD STAGE ────────────────────────────────────────────── */}
-          {stage === "upload" && (
-            <div className="w-full max-w-xl space-y-4">
-              {!pendingFile ? (
-                <div
-                  onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-                  onDragLeave={() => setIsDragging(false)}
-                  onDrop={(e) => { e.preventDefault(); setIsDragging(false); const f = e.dataTransfer.files[0]; if (f) handleFile(f); }}
-                  onClick={() => fileInputRef.current?.click()}
-                  className={`flex flex-col items-center justify-center gap-4 rounded-2xl border-2 border-dashed cursor-pointer transition-all p-16 ${
-                    isDragging ? "border-blue-400 bg-blue-50 scale-[1.01]" : "border-[--color-rule] bg-white hover:border-blue-300 hover:bg-blue-50/50"
-                  }`}
-                >
-                  <input ref={fileInputRef} type="file" accept="image/*,video/mp4,video/webm,video/quicktime" className="hidden"
-                    onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
-                  <div className={`w-16 h-16 rounded-2xl flex items-center justify-center ${isDragging ? "bg-blue-100" : "bg-[--color-surface-2]"}`}>
-                    <Upload className={`w-7 h-7 ${isDragging ? "text-blue-600" : "text-[--color-ink-4]"}`} />
-                  </div>
-                  <div className="text-center">
-                    <p className="text-sm font-bold text-[--color-ink] mb-1">{isDragging ? "Drop to upload" : "Drag & drop media"}</p>
-                    <p className="text-xs text-[--color-ink-3]">or <span className="text-blue-600 font-bold">browse files</span></p>
-                    <p className="text-[10px] text-[--color-ink-4] mt-2">JPEG · PNG · WEBP · GIF · MP4 · WEBM · max 10 MB</p>
-                  </div>
-                </div>
-              ) : (
-                <div className="bg-white rounded-2xl border border-[--color-rule] shadow-sm overflow-hidden">
-                  <div className="flex items-center justify-between px-4 py-3 border-b border-[--color-rule]">
-                    <div className="flex items-center gap-2">
-                      <FileImage className="w-4 h-4 text-blue-600" />
-                      <span className="text-xs font-bold text-[--color-ink] truncate max-w-[200px]">{pendingFile.name}</span>
-                      <span className="text-[10px] text-[--color-ink-4]">({fmt(pendingFile.size)})</span>
+      {/* ── Main Content Area ── */}
+      <div className="flex flex-1 overflow-hidden relative">
+        
+        {/* ── LEFT: Workflow Rail ── */}
+        <aside className="w-56 bg-white border-r border-[rgba(15,23,42,0.08)] flex flex-col z-10 shrink-0 relative shadow-[4px_0_24px_rgb(0,0,0,0.02)]">
+          <div className="p-6">
+             <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-6">Workflow</p>
+             <div className="space-y-6 relative">
+               <div className="absolute left-3 top-2 bottom-6 w-px bg-slate-100 -z-10" />
+               {steps.map((s, i) => (
+                 <div key={s.num} className="flex gap-4 relative">
+                    <div className={`w-6 h-6 rounded-full flex items-center justify-center text-[9px] font-bold shrink-0 transition-colors ${
+                       s.status === "done" ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20" :
+                       s.status === "current" ? "bg-blue-600 text-white shadow-md shadow-blue-600/20 ring-4 ring-blue-50" :
+                       "bg-slate-100 text-slate-400 border border-slate-200"
+                    }`}>
+                       {s.status === "done" ? <Check className="w-3 h-3" /> : s.num}
                     </div>
-                    <button onClick={resetAll} className="text-[--color-ink-4] hover:text-[--color-ink]"><X className="w-4 h-4" /></button>
-                  </div>
-                  <div className="relative bg-[--color-surface-2] min-h-[200px] flex items-center justify-center">
-                    {previewUrl && (
-                      // eslint-disable-next-line @next/next/no-img-element
-                      <img src={previewUrl} alt="Preview" className="max-w-full max-h-64 object-contain" />
-                    )}
-                    {uploadProgress !== null && (
-                      <motion.div 
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="absolute inset-0 flex flex-col items-center justify-center gap-6 bg-white/95 backdrop-blur-md"
-                      >
-                        <div className="flex flex-col items-center gap-4">
-                          <div className="relative flex items-center justify-center">
-                            <motion.div
-                              animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
-                              transition={{ duration: 2, repeat: Infinity }}
-                              className="absolute w-24 h-24 bg-blue-100 rounded-full blur-xl"
-                            />
-                            <div className="relative w-16 h-16 bg-white border border-blue-100 shadow-[0_8px_30px_-4px_rgba(59,130,246,0.15)] rounded-[16px] flex items-center justify-center z-10">
-                              <Upload className="w-6 h-6 text-blue-600" />
-                            </div>
-                          </div>
-                          <h3 className="font-editorial text-lg font-medium text-gray-900">
-                            Uploading to Cloudinary
-                          </h3>
-                        </div>
-
-                        <div className="w-64 space-y-2">
-                          <div className="flex justify-between font-ui text-[11px] font-medium text-gray-500">
-                            <span>Processing media...</span>
-                            <span className="tabular-nums text-blue-600 font-bold">{uploadProgress}%</span>
-                          </div>
-                          <div className="h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                            <motion.div 
-                              className="h-full bg-gradient-to-r from-blue-500 to-violet-500 rounded-full relative" 
-                              initial={{ width: 0 }}
-                              animate={{ width: `${uploadProgress}%` }}
-                              transition={{ duration: 0.2 }}
-                            >
-                              <div className="absolute inset-0 bg-white/30" style={{ animation: "shimmer 2s infinite linear", backgroundImage: "linear-gradient(90deg, transparent, rgba(255,255,255,0.8), transparent)" }} />
-                            </motion.div>
-                          </div>
-                        </div>
-
-                        <div className="flex items-center gap-4 mt-2 font-ui text-[10px] text-gray-400">
-                          <span className="flex items-center gap-1.5"><CheckCircle2 className="w-3 h-3 text-emerald-500" /> Validated</span>
-                          <span className="w-1 h-1 rounded-full bg-gray-200" />
-                          <span className="flex items-center gap-1.5 text-blue-500 font-bold"><Loader2 className="w-3 h-3 animate-spin" /> Uploading</span>
-                          <span className="w-1 h-1 rounded-full bg-gray-200" />
-                          <span className="flex items-center gap-1.5"><Brain className="w-3 h-3" /> Waiting for AI</span>
-                        </div>
-                      </motion.div>
-                    )}
-                  </div>
-                  {uploadError && (
-                    <div className="flex items-center gap-2 px-4 py-2 bg-red-50 border-t border-red-100">
-                      <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
-                      <p className="text-xs font-bold text-red-600">{uploadError}</p>
+                    <div className="pt-0.5">
+                       <p className={`text-xs font-bold transition-colors ${s.status === "current" ? "text-slate-900" : s.status === "done" ? "text-slate-700" : "text-slate-400"}`}>{s.title}</p>
+                       <p className="text-[10px] text-slate-500 mt-0.5">{s.desc}</p>
                     </div>
-                  )}
-                  <div className="px-4 py-3 flex justify-end gap-2 border-t border-[--color-rule]">
-                    <button onClick={resetAll} className="px-3 py-1.5 text-xs font-bold border border-[--color-rule] rounded-lg hover:bg-[--color-surface-2]">Cancel</button>
-                    <button
-                      onClick={uploadFile}
-                      disabled={uploadProgress !== null}
-                      className="flex items-center gap-2 px-4 py-1.5 bg-blue-600 text-white rounded-lg text-xs font-bold hover:bg-blue-700 disabled:opacity-50 transition-colors"
-                    >
-                      {uploadProgress !== null ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
-                      Upload to Cloudinary
-                    </button>
-                  </div>
-                </div>
-              )}
+                 </div>
+               ))}
+             </div>
+          </div>
+          {asset && (
+            <div className="mt-auto p-4 border-t border-[rgba(15,23,42,0.08)] bg-slate-50/50">
+               <div className="flex items-center gap-2 mb-2">
+                 <FileImage className="w-3.5 h-3.5 text-blue-500" />
+                 <p className="text-[10px] font-bold text-slate-700 truncate">{asset.publicId}</p>
+               </div>
+               <p className="text-[9px] text-slate-500">{fmt(asset.bytes)} · {asset.format.toUpperCase()} · {asset.width}×{asset.height}</p>
+               <button onClick={resetAll} className="mt-3 text-[10px] font-bold text-red-500 hover:text-red-700 flex items-center gap-1"><X className="w-3 h-3"/> Start Over</button>
             </div>
           )}
+        </aside>
 
-          {/* ── INSPECT STAGE ────────────────────────────────────────────── */}
-          {stage === "inspect" && asset && (
-            <div className="w-full max-w-xl space-y-4">
-              <div className="bg-white rounded-2xl border border-[--color-rule] shadow-sm overflow-hidden">
-                <div className="flex items-center justify-between px-4 py-3 border-b border-[--color-rule]">
-                  <div className="flex items-center gap-2">
-                    <Eye className="w-3.5 h-3.5 text-emerald-600" />
-                    <span className="text-xs font-bold text-[--color-ink]">Uploaded to Cloudinary</span>
+        {/* ── CENTER: Canvas ── */}
+        <main className="flex-1 flex flex-col relative bg-[#F8FAFC]">
+           
+           <AnimatePresence>
+             {isDragging && stage === "upload" && (
+                <motion.div initial={{opacity:0}} animate={{opacity:1}} exit={{opacity:0}} className="absolute inset-0 z-50 bg-blue-500/5 backdrop-blur-sm border-2 border-blue-500 border-dashed flex items-center justify-center m-4 rounded-3xl">
+                   <div className="bg-white px-8 py-5 rounded-2xl shadow-2xl flex items-center gap-4 border border-blue-100">
+                      <div className="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center"><Upload className="w-5 h-5 text-blue-600" /></div>
+                      <div>
+                        <span className="text-sm font-bold text-slate-800 block">Drop anywhere to upload</span>
+                        <span className="text-[10px] text-slate-500">SecureFlow AI will process the asset</span>
+                      </div>
+                   </div>
+                </motion.div>
+             )}
+           </AnimatePresence>
+           
+           <div className="flex-1 overflow-y-auto p-8 flex flex-col items-center justify-center relative">
+               
+               {/* ── STAGE: UPLOAD ── */}
+               {stage === "upload" && (
+                 <motion.div initial={{opacity:0, scale:0.98}} animate={{opacity:1, scale:1}} className="w-[65%] max-w-lg aspect-[4/3] rounded-3xl border border-[rgba(15,23,42,0.08)] bg-white shadow-[0_20px_40px_rgb(0,0,0,0.02)] flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-[0_20px_40px_rgb(0,0,0,0.04)] transition-shadow">
+                    {!pendingFile ? (
+                      <>
+                        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-50/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
+                        <input ref={fileInputRef} type="file" accept="image/*,video/mp4,video/webm,video/quicktime" className="hidden" onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
+                        <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-blue-50 transition-all duration-300">
+                           <Upload className="w-7 h-7 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                        </div>
+                        <p className="text-sm font-bold text-slate-800">Drop media here</p>
+                        <p className="text-xs text-slate-500 mt-1">or <button onClick={() => fileInputRef.current?.click()} className="text-blue-600 font-semibold hover:underline">browse from device</button></p>
+                        <p className="text-[10px] font-medium text-slate-400 mt-8 px-4 py-1.5 bg-slate-50 rounded-full">JPEG · PNG · WEBP · MP4 · Max 10 MB</p>
+                      </>
+                    ) : (
+                      <div className="w-full h-full flex flex-col relative">
+                        {previewUrl && (
+                          <div className="flex-1 relative p-4 flex items-center justify-center bg-slate-50/50">
+                             {/* eslint-disable-next-line @next/next/no-img-element */}
+                             <img src={previewUrl} alt="Preview" className="max-w-full max-h-full object-contain drop-shadow-md rounded-lg" />
+                          </div>
+                        )}
+                        <div className="p-4 border-t border-[rgba(15,23,42,0.08)] bg-white flex items-center justify-between shrink-0">
+                           <div>
+                             <p className="text-xs font-bold text-slate-800 truncate max-w-[200px]">{pendingFile.name}</p>
+                             <p className="text-[10px] text-slate-500 mt-0.5">{fmt(pendingFile.size)}</p>
+                           </div>
+                           <div className="flex gap-2">
+                              <button onClick={() => setPendingFile(null)} className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">Cancel</button>
+                              <button onClick={uploadFile} disabled={uploadProgress !== null} className="px-5 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors shadow-md flex items-center gap-2 disabled:opacity-50">
+                                {uploadProgress !== null ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                                Upload
+                              </button>
+                           </div>
+                        </div>
+                        
+                        {/* Uploading Overlay */}
+                        {uploadProgress !== null && (
+                          <motion.div initial={{opacity:0}} animate={{opacity:1}} className="absolute inset-0 bg-white/90 backdrop-blur-sm flex flex-col items-center justify-center z-10">
+                             <div className="w-16 h-16 bg-white border border-[rgba(15,23,42,0.08)] shadow-xl rounded-2xl flex items-center justify-center mb-6 relative">
+                                <motion.div animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }} transition={{ duration: 2, repeat: Infinity }} className="absolute inset-0 bg-blue-100 rounded-2xl blur-md -z-10" />
+                                <Upload className="w-6 h-6 text-blue-600" />
+                             </div>
+                             <p className="text-sm font-bold text-slate-800 mb-2">Uploading to Cloudinary...</p>
+                             <div className="w-48 h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                               <motion.div className="h-full bg-blue-500 rounded-full" initial={{ width: 0 }} animate={{ width: `${uploadProgress}%` }} />
+                             </div>
+                          </motion.div>
+                        )}
+                      </div>
+                    )}
+                 </motion.div>
+               )}
+
+               {/* ── STAGE: INSPECT (After upload, before processing) ── */}
+               {stage === "inspect" && asset && (
+                 <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} className="w-full max-w-3xl flex flex-col items-center gap-6">
+                    <div className="w-full bg-white p-2 rounded-2xl border border-[rgba(15,23,42,0.08)] shadow-[0_8px_30px_rgb(0,0,0,0.04)]">
+                       <div className="aspect-video relative rounded-xl overflow-hidden bg-slate-100/50 flex items-center justify-center p-4">
+                          <CldImage src={asset.publicId} alt="Uploaded" fill className="object-contain drop-shadow-md" />
+                       </div>
+                    </div>
+                    {intel && (
+                       <button onClick={() => setStage("smart-crop")} className="px-6 py-3 bg-blue-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-lg shadow-blue-600/20 group">
+                         Start Processing <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+                       </button>
+                    )}
+                 </motion.div>
+               )}
+
+               {/* ── STAGE: PROCESSING & OUTPUT (The actual studio) ── */}
+               {asset && ["smart-crop","crop","bg-removal","optimize","transform","output"].includes(stage) && (
+                 <motion.div initial={{opacity:0}} animate={{opacity:1}} className="w-full h-full flex flex-col items-center justify-center max-w-5xl">
+                    
+                    {/* Controls Panel (Top of Canvas) */}
+                    {stage !== "output" && (
+                      <div className="w-full bg-white rounded-2xl border border-[rgba(15,23,42,0.08)] shadow-[0_4px_20px_rgb(0,0,0,0.02)] p-5 mb-8 flex flex-col gap-4">
+                         
+                         {stage === "smart-crop" && (
+                           <>
+                             <div className="flex items-center justify-between">
+                               <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2"><Crop className="w-4 h-4 text-blue-500"/> Smart Crop (AI)</h3>
+                               <div className="flex items-center gap-3">
+                                 <code className="text-[10px] font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded">c_{transform.cropMode}, g_{transform.gravity}</code>
+                                 <button onClick={() => setT("smartCropEnabled", !transform.smartCropEnabled)} className={`text-[10px] font-bold px-3 py-1.5 rounded-lg transition-colors ${transform.smartCropEnabled ? "bg-red-50 text-red-600 hover:bg-red-100" : "bg-blue-600 text-white hover:bg-blue-700"}`}>
+                                   {transform.smartCropEnabled ? "Disable" : "Enable"}
+                                 </button>
+                               </div>
+                             </div>
+                             {transform.smartCropEnabled && (
+                               <div className="grid grid-cols-3 gap-6 pt-4 border-t border-[rgba(15,23,42,0.08)]">
+                                 <div>
+                                   <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-3">AI Gravity</p>
+                                   <div className="flex gap-2">
+                                     {["auto","faces","object"].map(g => (
+                                       <button key={g} onClick={() => setT("gravity", g as any)} className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg border transition-colors ${transform.gravity === g ? "bg-blue-600 text-white border-blue-600" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{g.toUpperCase()}</button>
+                                     ))}
+                                   </div>
+                                 </div>
+                                 <div>
+                                   <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-3">Aspect Ratio</p>
+                                   <div className="flex gap-2">
+                                     {["1:1","16:9","9:16","3:4"].map(ar => (
+                                       <button key={ar} onClick={() => setT("aspectRatio", ar)} className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg border transition-colors ${transform.aspectRatio === ar ? "bg-slate-800 text-white border-slate-800" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{ar}</button>
+                                     ))}
+                                   </div>
+                                 </div>
+                                 <div>
+                                   <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-3">Crop Mode</p>
+                                   <div className="flex gap-2">
+                                     {["fill","thumb","fit"].map(m => (
+                                       <button key={m} onClick={() => setT("cropMode", m as any)} className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg border transition-colors ${transform.cropMode === m ? "bg-slate-800 text-white border-slate-800" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{m.toUpperCase()}</button>
+                                     ))}
+                                   </div>
+                                 </div>
+                               </div>
+                             )}
+                           </>
+                         )}
+
+                         {stage === "bg-removal" && (
+                           <div className="flex items-center justify-between">
+                             <div className="flex items-center gap-3">
+                               <div className="w-8 h-8 rounded-lg bg-violet-50 flex items-center justify-center"><Layers className="w-4 h-4 text-violet-600" /></div>
+                               <div>
+                                 <h3 className="text-sm font-bold text-slate-800">Background Removal (AI)</h3>
+                                 <p className="text-[10px] text-slate-500">Requires Cloudinary add-on</p>
+                               </div>
+                             </div>
+                             <div className="flex items-center gap-3">
+                               <code className="text-[10px] font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded">{transform.removeBackground ? "e_background_removal" : "off"}</code>
+                               <button onClick={() => setT("removeBackground", !transform.removeBackground)} className={`text-[10px] font-bold px-4 py-2 rounded-lg transition-colors ${transform.removeBackground ? "bg-violet-600 text-white hover:bg-violet-700 shadow-md shadow-violet-600/20" : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"}`}>
+                                 {transform.removeBackground ? "Background Removed" : "Remove Background"}
+                               </button>
+                             </div>
+                           </div>
+                         )}
+
+                         {stage === "optimize" && (
+                           <>
+                             <div className="flex items-center justify-between">
+                               <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2"><Zap className="w-4 h-4 text-emerald-500"/> Optimization</h3>
+                               <code className="text-[10px] font-mono text-slate-500 bg-slate-50 px-2 py-1 rounded">f_{transform.format}, q_{transform.quality}</code>
+                             </div>
+                             <div className="grid grid-cols-2 gap-8 pt-4 border-t border-[rgba(15,23,42,0.08)]">
+                               <div>
+                                 <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-3">Format</p>
+                                 <div className="flex gap-2">
+                                   {["auto","webp","avif","jpg"].map(f => (
+                                     <button key={f} onClick={() => setT("format", f as any)} className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg border transition-colors ${transform.format === f ? "bg-emerald-600 text-white border-emerald-600" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{f.toUpperCase()}</button>
+                                   ))}
+                                 </div>
+                               </div>
+                               <div>
+                                 <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-3">Quality</p>
+                                 <div className="flex gap-2">
+                                   {["auto","60","80"].map(q => (
+                                     <button key={q} onClick={() => setT("quality", q as any)} className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg border transition-colors ${transform.quality === q ? "bg-emerald-600 text-white border-emerald-600" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{q === "auto" ? "AUTO" : q}</button>
+                                   ))}
+                                 </div>
+                               </div>
+                             </div>
+                           </>
+                         )}
+
+                         {stage === "transform" && (
+                           <>
+                             <div className="flex items-center justify-between">
+                               <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2"><Wand2 className="w-4 h-4 text-orange-500"/> Transform Studio</h3>
+                             </div>
+                             <div className="grid grid-cols-4 gap-4 pt-4 border-t border-[rgba(15,23,42,0.08)]">
+                               <button onClick={() => setT("blur", !transform.blur)} className={`py-2 text-[10px] font-bold rounded-lg border transition-colors ${transform.blur ? "bg-orange-50 text-orange-600 border-orange-200" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>Blur Effect</button>
+                               <button onClick={() => setT("grayscale", !transform.grayscale)} className={`py-2 text-[10px] font-bold rounded-lg border transition-colors ${transform.grayscale ? "bg-slate-800 text-white border-slate-800" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>Grayscale</button>
+                               <button onClick={() => setT("flipH", !transform.flipH)} className={`py-2 text-[10px] font-bold rounded-lg border transition-colors flex items-center justify-center gap-1 ${transform.flipH ? "bg-slate-800 text-white border-slate-800" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}><FlipHorizontal className="w-3 h-3"/> Flip H</button>
+                               <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-2">
+                                  <span className="text-[9px] font-bold text-slate-400">Rotate</span>
+                                  {[0,90,180,270].map(r => (
+                                     <button key={r} onClick={() => setT("rotate", r as any)} className={`flex-1 py-1 text-[9px] font-bold rounded ${transform.rotate === r ? "bg-white shadow-sm text-slate-800" : "text-slate-400 hover:text-slate-700"}`}>{r}°</button>
+                                  ))}
+                               </div>
+                             </div>
+                           </>
+                         )}
+
+                      </div>
+                    )}
+
+                    {/* Output Header */}
+                    {stage === "output" && (
+                       <div className="w-full text-center mb-8">
+                          <h2 className="text-2xl font-editorial font-bold text-slate-800">Final Asset Export</h2>
+                          <p className="text-sm text-slate-500 mt-2">Your asset is fully processed and optimized.</p>
+                       </div>
+                    )}
+
+                    {/* Before / After Layout */}
+                    <div className="w-full flex gap-8 items-center justify-center relative">
+                       {/* ORIGINAL */}
+                       <div className="flex-1 flex flex-col gap-3">
+                          <div className="flex items-center justify-between px-2">
+                             <span className="text-[10px] font-bold uppercase tracking-widest text-slate-400">Original Asset</span>
+                             <span className="text-[10px] font-mono text-slate-400">{fmt(asset.bytes)}</span>
+                          </div>
+                          <div className="bg-white p-2 rounded-2xl border border-[rgba(15,23,42,0.08)] shadow-[0_8px_30px_rgb(0,0,0,0.03)] aspect-square relative flex items-center justify-center overflow-hidden">
+                             <div className="absolute inset-0 bg-slate-50/50 -z-10" />
+                             <CldImage src={asset.publicId} alt="Original" fill className="object-contain p-4 drop-shadow-sm" />
+                          </div>
+                       </div>
+                       
+                       {/* DIVIDER */}
+                       <div className="w-10 h-10 rounded-full bg-white border border-[rgba(15,23,42,0.08)] shadow-sm flex items-center justify-center shrink-0 z-10 text-slate-400">
+                          <ArrowRight className="w-4 h-4" />
+                       </div>
+
+                       {/* RESULT */}
+                       <div className="flex-1 flex flex-col gap-3">
+                          <div className="flex items-center justify-between px-2">
+                             <span className="text-[10px] font-bold uppercase tracking-widest text-blue-600 flex items-center gap-1.5"><Sparkles className="w-3 h-3"/> Transformed Result</span>
+                             <span className="text-[10px] font-mono text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100">f_auto, q_auto</span>
+                          </div>
+                          <div className="bg-white p-2 rounded-2xl border-2 border-blue-100 shadow-[0_8px_30px_rgba(59,130,246,0.08)] aspect-square relative flex items-center justify-center overflow-hidden"
+                               style={transform.removeBackground ? { backgroundImage: "url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/OMEwgxgDaQaOmswI/4+wMBhgEAAA90QIDd4X3cAAAAASUVORK5CYII=')" } : undefined}
+                          >
+                             <div className="absolute inset-0 bg-slate-50/50 -z-10" />
+                             <CldImage
+                                key={JSON.stringify(transform)}
+                                src={asset.publicId}
+                                alt="Result"
+                                fill
+                                className="object-contain p-4 drop-shadow-lg"
+                                crop={transform.smartCropEnabled ? transform.cropMode : undefined}
+                                gravity={transform.smartCropEnabled ? transform.gravity : undefined}
+                                aspectRatio={transform.smartCropEnabled && transform.aspectRatio !== "custom" ? transform.aspectRatio : undefined}
+                                removeBackground={transform.removeBackground}
+                                blur={transform.blur ? "800" : undefined}
+                                grayscale={transform.grayscale}
+                                angle={transform.rotate !== 0 ? transform.rotate : undefined}
+                                format={transform.format !== "auto" ? (transform.format as "jpg"|"png"|"webp"|"avif") : undefined}
+                                quality={transform.quality !== "auto" ? parseInt(transform.quality) : "auto"}
+                                rawTransformations={[
+                                  ...(transform.flipH ? ["a_hflip"] : []),
+                                  ...(transform.flipV ? ["a_vflip"] : []),
+                                ].join("/") || undefined}
+                             />
+                          </div>
+                       </div>
+                    </div>
+
+                    {/* Output Actions */}
+                    {stage === "output" && (
+                       <motion.div initial={{opacity:0, y:20}} animate={{opacity:1, y:0}} className="mt-12 flex flex-col gap-4 w-full max-w-md">
+                          <button onClick={handleSave} disabled={saveLoading || saved} className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors shadow-lg disabled:opacity-50">
+                             {saveLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <Check className="w-4 h-4" /> : <Save className="w-4 h-4" />}
+                             {saveLoading ? "Saving..." : saved ? "Saved to Library" : "Save to Media Library"}
+                          </button>
+                          <div className="flex gap-2">
+                             <button onClick={copyUrl} className="flex-1 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+                               {copiedUrl ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />} {copiedUrl ? "Copied" : "Copy Delivery URL"}
+                             </button>
+                             <a href={deliveryUrl} target="_blank" rel="noreferrer" className="flex-1 py-3 bg-white border border-slate-200 rounded-xl text-xs font-bold text-slate-700 hover:bg-slate-50 transition-colors flex items-center justify-center gap-2">
+                               <ExternalLink className="w-3.5 h-3.5" /> Open Direct
+                             </a>
+                          </div>
+                       </motion.div>
+                    )}
+
+                 </motion.div>
+               )}
+           </div>
+
+           {/* ── BOTTOM: Processing Dock ── */}
+           <AnimatePresence>
+             {asset && stage !== "upload" && stage !== "output" && (
+                <motion.div initial={{y:100}} animate={{y:0}} exit={{y:100}} className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl border border-[rgba(15,23,42,0.08)] shadow-[0_20px_40px_rgb(0,0,0,0.08)] rounded-2xl flex items-center justify-center p-2 gap-1 z-20">
+                   <DockItem icon={<Crop className="w-4 h-4" />} label="Smart Crop" active={stage === "smart-crop"} onClick={() => setStage("smart-crop")} />
+                   <DockItem icon={<Layers className="w-4 h-4" />} label="Remove BG" active={stage === "bg-removal"} onClick={() => setStage("bg-removal")} />
+                   <DockItem icon={<Zap className="w-4 h-4" />} label="Optimize" active={stage === "optimize"} onClick={() => setStage("optimize")} />
+                   <DockItem icon={<Wand2 className="w-4 h-4" />} label="Transform" active={stage === "transform"} onClick={() => setStage("transform")} />
+                   <div className="w-px h-6 bg-slate-200 mx-2"></div>
+                   <DockItem icon={<Save className="w-4 h-4" />} label="Export" active={false} onClick={() => setStage("output")} />
+                </motion.div>
+             )}
+           </AnimatePresence>
+        </main>
+
+        {/* ── RIGHT: Intelligence Panel ── */}
+        <aside className="w-72 bg-white border-l border-[rgba(15,23,42,0.08)] flex flex-col overflow-y-auto z-10 shrink-0 shadow-[-4px_0_24px_rgb(0,0,0,0.02)]">
+           {!asset ? (
+             <div className="p-6">
+                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-6">Workspace Intel</p>
+                <div className="bg-slate-50 rounded-xl p-5 border border-slate-100 mb-8">
+                   <h3 className="text-sm font-bold text-slate-800 mb-2">Ready for media</h3>
+                   <p className="text-[11px] text-slate-500 leading-relaxed">Upload an image or video to begin the AI analysis and transformation workflow.</p>
+                </div>
+                <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-4">Supported Formats</p>
+                <div className="space-y-4">
+                   <div>
+                      <p className="text-xs font-bold text-slate-700 mb-1">Images</p>
+                      <p className="text-[10px] text-slate-500">JPEG, PNG, WEBP, GIF, AVIF</p>
+                   </div>
+                   <div>
+                      <p className="text-xs font-bold text-slate-700 mb-1">Video</p>
+                      <p className="text-[10px] text-slate-500">MP4, WEBM, MOV</p>
+                   </div>
+                </div>
+             </div>
+           ) : (
+             <div className="p-6 flex flex-col gap-8">
+                
+                {/* File Details Bento */}
+                <div>
+                   <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3">Asset Identity</p>
+                   <div className="bg-white rounded-xl p-3 border border-[rgba(15,23,42,0.08)] shadow-sm flex gap-3">
+                      <div className="w-12 h-12 rounded-lg overflow-hidden bg-slate-100 relative shrink-0">
+                        <CldImage src={asset.publicId} fill alt="thumb" className="object-cover" />
+                      </div>
+                      <div className="min-w-0 flex flex-col justify-center">
+                        <p className="text-xs font-bold text-slate-800 truncate">{asset.publicId}</p>
+                        <p className="text-[9px] text-slate-500 mt-0.5">{asset.width}×{asset.height} · {asset.format.toUpperCase()}</p>
+                      </div>
+                   </div>
+                </div>
+
+                {intelLoading ? (
+                  <div className="flex flex-col items-center justify-center py-12 gap-4">
+                     <Loader2 className="w-5 h-5 text-violet-500 animate-spin" />
+                     <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Extracting Intelligence</p>
                   </div>
-                  <a href={asset.secureUrl} target="_blank" rel="noreferrer" className="text-[10px] font-bold text-blue-600 flex items-center gap-1 hover:underline">
-                    <ExternalLink className="w-3 h-3" /> Open original
-                  </a>
-                </div>
-                <div className="bg-[--color-surface-2] flex items-center justify-center" style={{ minHeight: 240 }}>
-                  <CldImage
-                    src={asset.publicId}
-                    alt="Uploaded"
-                    width={asset.width || 600}
-                    height={asset.height || 400}
-                    className="max-w-full max-h-60 object-contain"
-                  />
-                </div>
-                <div className="px-4 py-3 grid grid-cols-3 divide-x divide-[--color-rule] text-center border-t border-[--color-rule]">
-                  <div className="px-2"><p className="text-[9px] text-[--color-ink-4] uppercase font-bold">Format</p><p className="text-xs font-bold text-[--color-ink] mt-0.5 uppercase">{asset.format}</p></div>
-                  <div className="px-2"><p className="text-[9px] text-[--color-ink-4] uppercase font-bold">Size</p><p className="text-xs font-bold text-[--color-ink] mt-0.5">{fmt(asset.bytes)}</p></div>
-                  <div className="px-2"><p className="text-[9px] text-[--color-ink-4] uppercase font-bold">Dimensions</p><p className="text-xs font-bold text-[--color-ink] mt-0.5">{asset.width && asset.height ? `${asset.width}×${asset.height}` : "—"}</p></div>
-                </div>
-              </div>
+                ) : intel ? (
+                  <motion.div initial={{opacity:0}} animate={{opacity:1}} className="space-y-8">
+                     
+                     {/* Moderation Bento */}
+                     <div>
+                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3">Moderation</p>
+                        <div className={`flex items-center justify-between p-3 rounded-xl border font-bold text-xs ${
+                            intel.moderation === "approved" ? "bg-emerald-50 text-emerald-700 border-emerald-100" :
+                            intel.moderation === "rejected" ? "bg-red-50 text-red-700 border-red-100" :
+                            "bg-amber-50 text-amber-700 border-amber-100"
+                        }`}>
+                           <div className="flex items-center gap-2"><ShieldCheck className="w-4 h-4" /> STATUS</div>
+                           <div>{intel.moderation === "approved" ? "SAFE" : intel.moderation === "rejected" ? "FLAGGED" : "PENDING"}</div>
+                        </div>
+                     </div>
 
-              {/* Analysis steps */}
-              <div className="bg-white rounded-2xl border border-[--color-rule] shadow-sm p-4 space-y-2">
-                <div className="flex items-center justify-between mb-2">
-                  <div className="flex items-center gap-2">
-                    <Brain className="w-3.5 h-3.5 text-violet-600" />
-                    <span className="text-xs font-bold text-[--color-ink]">AI Analysis</span>
-                  </div>
-                  {intelLoading && <Loader2 className="w-3 h-3 text-violet-500 animate-spin" />}
-                </div>
-                {intelSteps.map((s) => (
-                  <div key={s.step} className="flex items-center gap-2">
-                    {s.status === "done"    && <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 flex-shrink-0" />}
-                    {s.status === "running" && <Loader2 className="w-3.5 h-3.5 text-blue-500 animate-spin flex-shrink-0" />}
-                    {s.status === "error"   && <AlertCircle className="w-3.5 h-3.5 text-red-400 flex-shrink-0" />}
-                    {s.status === "pending" && <div className="w-3.5 h-3.5 rounded-full border-2 border-[--color-rule] flex-shrink-0" />}
-                    <span className={`text-xs font-semibold ${
-                      s.status === "done" ? "text-emerald-700"
-                      : s.status === "running" ? "text-blue-600"
-                      : s.status === "error" ? "text-red-500"
-                      : "text-[--color-ink-4]"
-                    }`}>{s.step}</span>
-                  </div>
-                ))}
-              </div>
+                     {/* Tags Bento */}
+                     {intel.tags.length > 0 && (
+                       <div>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3">AI Tags</p>
+                          <div className="bg-white rounded-xl p-4 border border-[rgba(15,23,42,0.08)] shadow-sm space-y-3">
+                             {intel.tags.slice(0,8).map(t => (
+                               <div key={t.tag} className="flex items-center justify-between group">
+                                  <span className="text-xs font-medium text-slate-700 capitalize flex items-center gap-2"><Tag className="w-3 h-3 text-slate-400" /> {t.tag}</span>
+                                  <span className="text-[10px] font-mono text-slate-400">{t.confidence}%</span>
+                               </div>
+                             ))}
+                          </div>
+                       </div>
+                     )}
 
-              {intel && (
-                <button
-                  onClick={() => setStage("smart-crop")}
-                  className="w-full py-2.5 bg-blue-600 text-white rounded-xl font-bold text-xs flex items-center justify-center gap-2 hover:bg-blue-700 transition-colors shadow-sm"
-                >
-                  Continue to Processing <ArrowRight className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          )}
+                     {/* Caption Bento */}
+                     {intel.caption && (
+                       <div>
+                          <p className="text-[9px] font-bold text-slate-400 uppercase tracking-widest mb-3">AI Caption</p>
+                          <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
+                             <p className="text-xs text-slate-600 leading-relaxed italic">&ldquo;{intel.caption}&rdquo;</p>
+                          </div>
+                       </div>
+                     )}
 
-          {/* ── PROCESSING STAGES (smart-crop, crop, bg-removal, optimize, transform) ── */}
-          {asset && ["smart-crop","crop","bg-removal","optimize","transform"].includes(stage) && (
-            <div className="w-full space-y-4">
-              {/* Before / After */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-white rounded-xl border border-[--color-rule] shadow-sm overflow-hidden">
-                  <div className="px-3 py-2 border-b border-[--color-rule]">
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-[--color-ink-4]">Original</p>
-                  </div>
-                  <div className="aspect-square relative bg-[--color-surface-2]">
-                    <CldImage src={asset.publicId} alt="Original" fill className="object-contain" />
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-xl border-2 border-blue-200 shadow-sm overflow-hidden">
-                  <div className="px-3 py-2 border-b border-[--color-rule] flex items-center gap-1.5 bg-blue-50">
-                    <Sparkles className="w-2.5 h-2.5 text-blue-500" />
-                    <p className="text-[9px] font-bold uppercase tracking-widest text-blue-600">Result</p>
-                  </div>
-                  <div
-                    className="aspect-square relative bg-[--color-surface-2]"
-                    style={transform.removeBackground ? {
-                      backgroundImage: "linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%)",
-                      backgroundSize: "16px 16px",
-                      backgroundPosition: "0 0,0 8px,8px -8px,-8px 0",
-                    } : undefined}
-                  >
-                    <CldImage
-                      key={JSON.stringify(transform)}
-                      src={asset.publicId}
-                      alt="Result"
-                      fill
-                      className="object-contain"
-                      crop={transform.smartCropEnabled ? transform.cropMode : undefined}
-                      gravity={transform.smartCropEnabled ? transform.gravity : undefined}
-                      aspectRatio={transform.smartCropEnabled && transform.aspectRatio !== "custom" ? transform.aspectRatio : undefined}
-                      removeBackground={transform.removeBackground}
-                      blur={transform.blur ? "800" : undefined}
-                      grayscale={transform.grayscale}
-                      angle={transform.rotate !== 0 ? transform.rotate : undefined}
-                      format={transform.format !== "auto" ? (transform.format as "jpg"|"png"|"webp"|"avif") : undefined}
-                      quality={transform.quality !== "auto" ? parseInt(transform.quality) : "auto"}
-                      rawTransformations={[
-                        ...(transform.flipH ? ["a_hflip"] : []),
-                        ...(transform.flipV ? ["a_vflip"] : []),
-                      ].join("/") || undefined}
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Active params strip */}
-              {activeParams.length > 0 && (
-                <div className="flex flex-wrap gap-1.5">
-                  {activeParams.map((p, i) => (
-                    <code key={i} className={`text-[9px] font-mono px-2 py-0.5 rounded border ${p.color}`}>{p.label}</code>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ── OUTPUT STAGE ─────────────────────────────────────────────── */}
-          {stage === "output" && asset && (
-            <div className="w-full max-w-xl space-y-4">
-              <div className="bg-white rounded-2xl border border-[--color-rule] shadow-sm overflow-hidden">
-                <div className="px-4 py-3 border-b border-[--color-rule] flex items-center gap-2">
-                  <Eye className="w-3.5 h-3.5 text-blue-600" />
-                  <span className="text-xs font-bold text-[--color-ink]">Final Result</span>
-                </div>
-                <div className="bg-[--color-surface-2] flex items-center justify-center min-h-[240px]"
-                  style={transform.removeBackground ? {
-                    backgroundImage: "linear-gradient(45deg,#e5e7eb 25%,transparent 25%),linear-gradient(-45deg,#e5e7eb 25%,transparent 25%),linear-gradient(45deg,transparent 75%,#e5e7eb 75%),linear-gradient(-45deg,transparent 75%,#e5e7eb 75%)",
-                    backgroundSize: "16px 16px", backgroundPosition: "0 0,0 8px,8px -8px,-8px 0",
-                  } : undefined}
-                >
-                  <CldImage
-                    key={`output-${JSON.stringify(transform)}`}
-                    src={asset.publicId}
-                    alt="Final output"
-                    width={parseInt(transform.width) || 800}
-                    height={parseInt(transform.height) || 800}
-                    className="max-w-full max-h-64 object-contain"
-                    crop={transform.smartCropEnabled ? transform.cropMode : undefined}
-                    gravity={transform.smartCropEnabled ? transform.gravity : undefined}
-                    aspectRatio={transform.smartCropEnabled && transform.aspectRatio !== "custom" ? transform.aspectRatio : undefined}
-                    removeBackground={transform.removeBackground}
-                    blur={transform.blur ? "800" : undefined}
-                    grayscale={transform.grayscale}
-                    angle={transform.rotate !== 0 ? transform.rotate : undefined}
-                    format={transform.format !== "auto" ? (transform.format as "jpg"|"png"|"webp"|"avif") : undefined}
-                    quality={transform.quality !== "auto" ? parseInt(transform.quality) : "auto"}
-                    rawTransformations={[
-                      ...(transform.flipH ? ["a_hflip"] : []),
-                      ...(transform.flipV ? ["a_vflip"] : []),
-                    ].join("/") || undefined}
-                  />
-                </div>
-              </div>
-
-              {/* Delivery URL */}
-              <div className="bg-[--color-surface-2] rounded-xl border border-[--color-rule] p-3">
-                <div className="flex items-center justify-between mb-1.5">
-                  <p className="text-[9px] font-bold uppercase tracking-widest text-[--color-ink-4]">Cloudinary Delivery URL</p>
-                  <div className="flex gap-2">
-                    <button onClick={copyUrl} className="flex items-center gap-1 text-[10px] font-bold text-blue-600 hover:underline">
-                      {copiedUrl ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
-                      {copiedUrl ? "Copied!" : "Copy"}
-                    </button>
-                    <a href={deliveryUrl} target="_blank" rel="noreferrer" className="flex items-center gap-1 text-[10px] font-bold text-[--color-ink-3] hover:text-[--color-ink]">
-                      <ExternalLink className="w-3 h-3" /> Open
-                    </a>
-                  </div>
-                </div>
-                <code className="text-[9px] font-mono text-[--color-ink] break-all leading-relaxed block">{deliveryUrl}</code>
-              </div>
-
-              {/* Save */}
-              {!saved ? (
-                <button
-                  onClick={handleSave}
-                  disabled={saveLoading}
-                  className="w-full py-3 bg-emerald-600 text-white rounded-xl font-bold text-sm flex items-center justify-center gap-2 hover:bg-emerald-700 disabled:opacity-50 transition-colors shadow-sm"
-                >
-                  {saveLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                  {saveLoading ? "Saving..." : "Save to Media Library"}
-                </button>
-              ) : (
-                <div className="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-xs font-bold text-emerald-700">
-                  <Check className="w-4 h-4" />
-                  Saved! View in <Link href="/dashboard/evidence" className="underline ml-1">Media Library →</Link>
-                </div>
-              )}
-            </div>
-          )}
-        </div>
+                  </motion.div>
+                ) : null}
+             </div>
+           )}
+        </aside>
       </div>
-
-      {/* ══ RIGHT: Controls panel ═════════════════════════════════════════════ */}
-      <aside className="w-64 flex-shrink-0 flex flex-col border-l border-[--color-rule] bg-white overflow-hidden">
-        <div className="px-4 py-2.5 border-b border-[--color-rule] flex items-center gap-2">
-          <Settings className="w-3.5 h-3.5 text-[--color-ink-4]" />
-          <span className="text-[10px] font-bold uppercase tracking-widest text-[--color-ink-4]">Controls</span>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-
-          {/* ── UPLOAD controls ──────────────────────────────────────────── */}
-          {stage === "upload" && (
-            <div className="space-y-3 text-xs text-[--color-ink-3]">
-              <p className="font-bold text-[--color-ink]">Getting Started</p>
-              {[
-                { n: 1, text: "Upload any image or video file" },
-                { n: 2, text: "AI analyzes tags & moderation" },
-                { n: 3, text: "Apply transformations visually" },
-                { n: 4, text: "Copy delivery URL or save" },
-              ].map(({ n, text }) => (
-                <div key={n} className="flex items-start gap-2">
-                  <span className="w-4 h-4 rounded-full bg-blue-100 text-blue-700 text-[9px] font-bold flex items-center justify-center flex-shrink-0 mt-0.5">{n}</span>
-                  <span>{text}</span>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {/* ── INSPECT controls ─────────────────────────────────────────── */}
-          {stage === "inspect" && intel && (
-            <div className="space-y-4">
-              {intel.tags.length > 0 && (
-                <PanelSection title="AI Tags">
-                  <div className="space-y-1.5">
-                    {intel.tags.map(({ tag, confidence }) => (
-                      <div key={tag} className="flex items-center gap-2">
-                        <span className="text-[11px] text-[--color-ink] flex-1 capitalize">{tag}</span>
-                        <div className="w-12 h-1 bg-[--color-rule] rounded-full overflow-hidden">
-                          <div className="h-full bg-blue-500 rounded-full" style={{ width: `${confidence}%` }} />
-                        </div>
-                        <span className="text-[9px] font-bold text-[--color-ink-4] w-7 text-right tabular-nums">{confidence}%</span>
-                      </div>
-                    ))}
-                  </div>
-                </PanelSection>
-              )}
-              {intel.caption && (
-                <PanelSection title="AI Caption">
-                  <p className="text-[11px] text-violet-700 italic">&ldquo;{intel.caption}&rdquo;</p>
-                </PanelSection>
-              )}
-              <PanelSection title="Moderation">
-                <div className={`flex items-center gap-2 text-xs font-bold rounded-lg px-2.5 py-2 ${
-                  intel.moderation === "approved" ? "text-emerald-700 bg-emerald-50"
-                  : intel.moderation === "rejected" ? "text-red-700 bg-red-50"
-                  : "text-amber-700 bg-amber-50"
-                }`}>
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  {intel.moderation === "approved" ? "✓ Content Approved"
-                    : intel.moderation === "rejected" ? "⚠ Content Flagged"
-                    : intel.moderation === "addon_required" ? "Add-on Required"
-                    : "Moderation Pending"}
-                </div>
-                {intel.moderation === "addon_required" && (
-                  <p className="text-[10px] text-amber-600 mt-1">Enable the Cloudinary AI Moderation add-on to get results.</p>
-                )}
-              </PanelSection>
-            </div>
-          )}
-
-          {/* ── SMART CROP controls ───────────────────────────────────────── */}
-          {stage === "smart-crop" && (
-            <div className="space-y-4">
-              <div className="flex items-center gap-2 p-2.5 rounded-lg bg-blue-50 border border-blue-200">
-                <div className={`w-2 h-2 rounded-full ${transform.smartCropEnabled ? "bg-blue-600" : "bg-[--color-rule]"}`} />
-                <span className="text-[10px] font-bold text-blue-700">
-                  {transform.smartCropEnabled ? "Smart Crop Active" : "Smart Crop Off"}
-                </span>
-                <button
-                  onClick={() => setT("smartCropEnabled", !transform.smartCropEnabled)}
-                  className={`ml-auto text-[9px] font-bold px-2 py-0.5 rounded border transition-all ${transform.smartCropEnabled ? "bg-white text-red-600 border-red-200 hover:bg-red-50" : "bg-blue-600 text-white border-blue-600 hover:bg-blue-700"}`}
-                >
-                  {transform.smartCropEnabled ? "Disable" : "Enable"}
-                </button>
-              </div>
-
-              <PanelSection title="Gravity">
-                <div className="grid grid-cols-2 gap-1.5">
-                  {([
-                    { v: "auto", l: "AI Auto", sub: "Best focus" },
-                    { v: "faces", l: "Face", sub: "Detect faces" },
-                    { v: "object", l: "Object", sub: "Main object" },
-                    { v: "center", l: "Center", sub: "Geometric" },
-                  ] as const).map(({ v, l, sub }) => (
-                    <button
-                      key={v}
-                      onClick={() => { setT("gravity", v); setT("smartCropEnabled", true); }}
-                      className={`px-2 py-1.5 rounded-lg border text-left transition-all ${
-                        transform.gravity === v && transform.smartCropEnabled
-                          ? "bg-blue-600 border-blue-600 text-white"
-                          : "border-[--color-rule] hover:bg-blue-50 hover:border-blue-200"
-                      }`}
-                    >
-                      <p className="text-[10px] font-bold">{l}</p>
-                      <p className={`text-[8px] ${transform.gravity === v && transform.smartCropEnabled ? "text-blue-200" : "text-[--color-ink-4]"}`}>{sub}</p>
-                    </button>
-                  ))}
-                </div>
-              </PanelSection>
-
-              <PanelSection title="Crop Mode">
-                <div className="flex flex-wrap gap-1">
-                  {(["fill","thumb","fit","scale","crop","pad"] as const).map(m => (
-                    <OptionBtn key={m} active={transform.cropMode === m && transform.smartCropEnabled} onClick={() => { setT("cropMode", m); setT("smartCropEnabled", true); }}>
-                      {m}
-                    </OptionBtn>
-                  ))}
-                </div>
-              </PanelSection>
-
-              <PanelSection title="Preset">
-                <div className="grid grid-cols-2 gap-1">
-                  {[
-                    { l: "Square", v: "1:1" }, { l: "Portrait", v: "3:4" },
-                    { l: "Landscape", v: "16:9" }, { l: "Social", v: "4:5" },
-                    { l: "Wide", v: "21:9" }, { l: "Classic", v: "4:3" },
-                  ].map(({ l, v }) => (
-                    <button key={l} onClick={() => { setT("aspectRatio", v); setT("smartCropEnabled", true); }}
-                      className={`text-[10px] font-bold px-2 py-1 rounded-lg border transition-all ${
-                        transform.aspectRatio === v && transform.smartCropEnabled ? "bg-blue-50 border-blue-400 text-blue-700" : "border-[--color-rule] hover:bg-[--color-surface-2] text-[--color-ink]"
-                      }`}
-                    >
-                      {l} <span className="opacity-50 font-mono">{v}</span>
-                    </button>
-                  ))}
-                </div>
-              </PanelSection>
-
-              <PanelSection title="Dimensions">
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <p className="text-[9px] text-[--color-ink-4] mb-1">Width</p>
-                    <input type="number" value={transform.width} onChange={(e) => setT("width", e.target.value)}
-                      className="w-full px-2 py-1 border border-[--color-rule] rounded text-xs font-bold focus:outline-none focus:border-blue-400" />
-                  </div>
-                  <div>
-                    <p className="text-[9px] text-[--color-ink-4] mb-1">Height</p>
-                    <input type="number" value={transform.height} onChange={(e) => setT("height", e.target.value)}
-                      className="w-full px-2 py-1 border border-[--color-rule] rounded text-xs font-bold focus:outline-none focus:border-blue-400" />
-                  </div>
-                </div>
-              </PanelSection>
-
-              <div className="bg-[--color-surface-2] rounded-lg border border-[--color-rule] p-2.5">
-                <p className="text-[8px] font-bold uppercase tracking-widest text-[--color-ink-4] mb-1.5">Cloudinary</p>
-                <div className="flex flex-wrap gap-1">
-                  {transform.smartCropEnabled ? (
-                    <>
-                      <code className="text-[9px] font-mono text-blue-600">{`c_${transform.cropMode}`}</code>
-                      <code className="text-[9px] font-mono text-blue-600">{`g_${transform.gravity}`}</code>
-                      {transform.aspectRatio !== "custom" && <code className="text-[9px] font-mono text-blue-600">{`ar_${transform.aspectRatio.replace(":","_")}`}</code>}
-                    </>
-                  ) : (
-                    <span className="text-[9px] text-[--color-ink-4]">Enable Smart Crop to apply</span>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* ── CROP controls ─────────────────────────────────────────────── */}
-          {stage === "crop" && (
-            <div className="space-y-4">
-              <PanelSection title="Aspect Ratio">
-                <div className="grid grid-cols-1 gap-1">
-                  {[
-                    { l: "Freeform", v: "custom" }, { l: "Square 1:1", v: "1:1" },
-                    { l: "Portrait 3:4", v: "3:4" }, { l: "Landscape 16:9", v: "16:9" },
-                    { l: "Vertical 9:16", v: "9:16" }, { l: "Classic 4:3", v: "4:3" },
-                  ].map(({ l, v }) => (
-                    <button key={l}
-                      onClick={() => { setT("aspectRatio", v); setT("cropMode", "fill"); setT("gravity", "center"); setT("smartCropEnabled", true); }}
-                      className={`text-left px-2.5 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${
-                        transform.aspectRatio === v && transform.smartCropEnabled ? "bg-violet-50 border-violet-400 text-violet-700" : "border-[--color-rule] hover:bg-[--color-surface-2]"
-                      }`}
-                    >{l}</button>
-                  ))}
-                </div>
-              </PanelSection>
-              <PanelSection title="Rotate">
-                <div className="flex gap-1">
-                  {([0, 90, 180, 270] as const).map(r => (
-                    <button key={r} onClick={() => setT("rotate", r)}
-                      className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${transform.rotate === r ? "bg-violet-600 text-white border-violet-600" : "border-[--color-rule] hover:bg-[--color-surface-2]"}`}
-                    >{r}°</button>
-                  ))}
-                </div>
-              </PanelSection>
-              <PanelSection title="Flip">
-                <div className="flex gap-1.5">
-                  <button onClick={() => setT("flipH", !transform.flipH)}
-                    className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${transform.flipH ? "bg-violet-600 text-white border-violet-600" : "border-[--color-rule] hover:bg-[--color-surface-2]"}`}
-                  ><FlipHorizontal className="w-3 h-3" /> H</button>
-                  <button onClick={() => setT("flipV", !transform.flipV)}
-                    className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${transform.flipV ? "bg-violet-600 text-white border-violet-600" : "border-[--color-rule] hover:bg-[--color-surface-2]"}`}
-                  ><FlipVertical className="w-3 h-3" /> V</button>
-                </div>
-              </PanelSection>
-            </div>
-          )}
-
-          {/* ── BG REMOVAL controls ───────────────────────────────────────── */}
-          {stage === "bg-removal" && (
-            <div className="space-y-4">
-              {/* Honest capability notice */}
-              <div className="bg-amber-50 border border-amber-200 rounded-xl p-3">
-                <div className="flex items-start gap-2">
-                  <AlertCircle className="w-3.5 h-3.5 text-amber-600 flex-shrink-0 mt-0.5" />
-                  <div>
-                    <p className="text-[10px] font-bold text-amber-700">Add-on Required</p>
-                    <p className="text-[10px] text-amber-600 mt-0.5">
-                      Background removal requires the Cloudinary AI Background Removal add-on.
-                      If not enabled, the result will show the original image.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <PanelSection title="Remove Background">
-                <button
-                  onClick={() => setT("removeBackground", !transform.removeBackground)}
-                  className={`w-full py-2 rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all border ${
-                    transform.removeBackground
-                      ? "bg-violet-600 text-white border-violet-600 shadow-sm"
-                      : "border-[--color-rule] text-[--color-ink] hover:bg-violet-50 hover:border-violet-300"
-                  }`}
-                >
-                  <Layers className="w-3.5 h-3.5" />
-                  {transform.removeBackground ? "Background Removal ON" : "Enable Background Removal"}
-                </button>
-              </PanelSection>
-
-              <div className="bg-[--color-surface-2] rounded-lg border border-[--color-rule] p-2.5">
-                <p className="text-[8px] font-bold uppercase tracking-widest text-[--color-ink-4] mb-1.5">Cloudinary Parameter</p>
-                <code className={`text-[10px] font-mono ${transform.removeBackground ? "text-violet-600" : "text-[--color-ink-4]"}`}>
-                  {transform.removeBackground ? "e_background_removal" : "(not applied)"}
-                </code>
-              </div>
-
-              {!cloudinaryConfigured && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-3">
-                  <p className="text-[10px] font-bold text-red-700">Cloudinary Not Configured</p>
-                  <p className="text-[10px] text-red-600 mt-0.5">Check your environment variables.</p>
-                  <Link href="/dashboard/configuration" className="text-[10px] font-bold text-red-700 underline mt-1 block">Check Configuration →</Link>
-                </div>
-              )}
-            </div>
-          )}
-
-          {/* ── OPTIMIZE controls ─────────────────────────────────────────── */}
-          {stage === "optimize" && (
-            <div className="space-y-4">
-              <PanelSection title="Format">
-                <div className="grid grid-cols-2 gap-1">
-                  {(["auto","jpg","png","webp","avif"] as const).map(f => (
-                    <button key={f} onClick={() => setT("format", f)}
-                      className={`py-1.5 rounded-lg text-[10px] font-bold border transition-all ${transform.format === f ? "bg-emerald-50 border-emerald-400 text-emerald-700" : "border-[--color-rule] hover:bg-[--color-surface-2]"}`}
-                    >
-                      {f === "auto" ? "Auto ★" : f.toUpperCase()}
-                    </button>
-                  ))}
-                </div>
-              </PanelSection>
-              <PanelSection title="Quality">
-                <div className="grid grid-cols-2 gap-1">
-                  {(["auto","60","70","80","90"] as const).map(q => (
-                    <button key={q} onClick={() => setT("quality", q)}
-                      className={`py-1.5 rounded-lg text-[10px] font-bold border transition-all ${transform.quality === q ? "bg-emerald-50 border-emerald-400 text-emerald-700" : "border-[--color-rule] hover:bg-[--color-surface-2]"}`}
-                    >
-                      {q === "auto" ? "Auto ★" : `q_${q}`}
-                    </button>
-                  ))}
-                </div>
-              </PanelSection>
-              <div className="bg-[--color-surface-2] rounded-lg border border-[--color-rule] p-2.5">
-                <p className="text-[8px] font-bold uppercase tracking-widest text-[--color-ink-4] mb-1.5">Active</p>
-                <code className="text-[10px] font-mono text-emerald-600">{`f_${transform.format},q_${transform.quality}`}</code>
-                <p className="text-[9px] text-[--color-ink-4] mt-1.5">Actual savings measured at delivery time by Cloudinary.</p>
-              </div>
-            </div>
-          )}
-
-          {/* ── TRANSFORM STUDIO controls ─────────────────────────────────── */}
-          {stage === "transform" && (
-            <div className="space-y-4">
-              <PanelSection title="Effects">
-                <div className="space-y-1">
-                  <button onClick={() => setT("blur", !transform.blur)}
-                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-[10px] font-bold border flex items-center justify-between transition-all ${transform.blur ? "bg-orange-50 border-orange-400 text-orange-700" : "border-[--color-rule] hover:bg-[--color-surface-2]"}`}
-                  >Blur {transform.blur && <Check className="w-3 h-3" />}</button>
-                  <button onClick={() => setT("grayscale", !transform.grayscale)}
-                    className={`w-full text-left px-2.5 py-1.5 rounded-lg text-[10px] font-bold border flex items-center justify-between transition-all ${transform.grayscale ? "bg-gray-100 border-gray-400 text-gray-700" : "border-[--color-rule] hover:bg-[--color-surface-2]"}`}
-                  >Grayscale {transform.grayscale && <Check className="w-3 h-3" />}</button>
-                </div>
-              </PanelSection>
-              <PanelSection title="Rotate">
-                <div className="flex gap-1">
-                  {([0,90,180,270] as const).map(r => (
-                    <button key={r} onClick={() => setT("rotate", r)}
-                      className={`flex-1 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${transform.rotate === r ? "bg-orange-600 text-white border-orange-600" : "border-[--color-rule] hover:bg-[--color-surface-2]"}`}
-                    >{r}°</button>
-                  ))}
-                </div>
-              </PanelSection>
-              <PanelSection title="Flip">
-                <div className="flex gap-1.5">
-                  <button onClick={() => setT("flipH", !transform.flipH)}
-                    className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${transform.flipH ? "bg-orange-600 text-white border-orange-600" : "border-[--color-rule] hover:bg-[--color-surface-2]"}`}
-                  ><FlipHorizontal className="w-3 h-3" /> Flip H</button>
-                  <button onClick={() => setT("flipV", !transform.flipV)}
-                    className={`flex-1 flex items-center justify-center gap-1 py-1.5 rounded-lg text-[10px] font-bold border transition-all ${transform.flipV ? "bg-orange-600 text-white border-orange-600" : "border-[--color-rule] hover:bg-[--color-surface-2]"}`}
-                  ><FlipVertical className="w-3 h-3" /> Flip V</button>
-                </div>
-              </PanelSection>
-              <PanelSection title="Dimensions">
-                <div className="grid grid-cols-2 gap-2">
-                  <div>
-                    <p className="text-[9px] text-[--color-ink-4] mb-1">Width</p>
-                    <input type="number" value={transform.width} onChange={(e) => setT("width", e.target.value)}
-                      className="w-full px-2 py-1 border border-[--color-rule] rounded text-xs font-bold focus:outline-none focus:border-orange-400" />
-                  </div>
-                  <div>
-                    <p className="text-[9px] text-[--color-ink-4] mb-1">Height</p>
-                    <input type="number" value={transform.height} onChange={(e) => setT("height", e.target.value)}
-                      className="w-full px-2 py-1 border border-[--color-rule] rounded text-xs font-bold focus:outline-none focus:border-orange-400" />
-                  </div>
-                </div>
-              </PanelSection>
-            </div>
-          )}
-
-          {/* ── OUTPUT controls ───────────────────────────────────────────── */}
-          {stage === "output" && (
-            <div className="space-y-4">
-              {intel && (
-                <>
-                  {intel.tags.length > 0 && (
-                    <PanelSection title="AI Tags">
-                      <div className="flex flex-wrap gap-1">
-                        {intel.tags.slice(0, 6).map(({ tag, confidence }) => (
-                          <span key={tag} className="text-[9px] font-bold text-blue-700 bg-blue-50 border border-blue-100 rounded-full px-1.5 py-0.5 capitalize">
-                            {tag} <span className="text-blue-400">{confidence}%</span>
-                          </span>
-                        ))}
-                      </div>
-                    </PanelSection>
-                  )}
-                  <PanelSection title="Applied Transforms">
-                    <div className="space-y-1">
-                      {transform.smartCropEnabled && <div className="flex items-center gap-1.5 text-[10px] text-emerald-700"><Check className="w-3 h-3" /> Smart Crop ({transform.gravity})</div>}
-                      {transform.removeBackground && <div className="flex items-center gap-1.5 text-[10px] text-emerald-700"><Check className="w-3 h-3" /> Background Removed</div>}
-                      {transform.blur && <div className="flex items-center gap-1.5 text-[10px] text-emerald-700"><Check className="w-3 h-3" /> Blur Effect</div>}
-                      {transform.grayscale && <div className="flex items-center gap-1.5 text-[10px] text-emerald-700"><Check className="w-3 h-3" /> Grayscale</div>}
-                      {transform.rotate !== 0 && <div className="flex items-center gap-1.5 text-[10px] text-emerald-700"><Check className="w-3 h-3" /> Rotated {transform.rotate}°</div>}
-                      <div className="flex items-center gap-1.5 text-[10px] text-emerald-700"><Check className="w-3 h-3" /> Format: f_{transform.format}</div>
-                      <div className="flex items-center gap-1.5 text-[10px] text-emerald-700"><Check className="w-3 h-3" /> Quality: q_{transform.quality}</div>
-                    </div>
-                  </PanelSection>
-                </>
-              )}
-            </div>
-          )}
-
-          {/* Go to output button for process stages */}
-          {asset && ["smart-crop","crop","bg-removal","optimize","transform"].includes(stage) && (
-            <div className="pt-2 border-t border-[--color-rule]">
-              <button
-                onClick={() => setStage("output")}
-                className="w-full py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-emerald-700 transition-colors"
-              >
-                <Eye className="w-3.5 h-3.5" /> Preview & Save
-              </button>
-            </div>
-          )}
-        </div>
-      </aside>
     </div>
   );
 }
