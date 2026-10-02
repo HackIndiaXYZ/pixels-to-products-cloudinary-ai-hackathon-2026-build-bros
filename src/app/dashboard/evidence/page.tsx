@@ -34,28 +34,38 @@ export default async function EvidenceLibraryPage() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto space-y-8">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4 border-b border-[--color-rule-light] pb-6">
+    <div className="max-w-[1400px] mx-auto space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 border-b border-[--color-rule-light] pb-6">
         <div>
-          <h1 className="font-editorial text-3xl text-[--color-ink] mb-2">Evidence Library</h1>
-          <p className="font-editorial text-sm text-[--color-ink-3]">Historical security reports and analyzed media assets.</p>
+          <h1 className="text-3xl font-bold text-[--color-ink] tracking-tight mb-2">Media Library</h1>
+          <p className="text-sm font-semibold text-[--color-ink-3]">Your complete media intelligence workspace.</p>
         </div>
         <div className="flex items-center gap-3">
-          <div className="relative">
-            <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[--color-ink-4]" />
+          <Link href="/dashboard/analysis/new" className="px-4 py-2 bg-[--color-ink] text-white rounded-lg text-xs font-bold shadow-sm hover:bg-[--color-primary] transition-colors">
+            + Upload Media
+          </Link>
+        </div>
+      </div>
+
+      <div className="flex flex-col md:flex-row justify-between items-center gap-4 bg-white p-4 rounded-xl border border-[--color-rule-light] shadow-sm">
+        <div className="relative flex-1 w-full max-w-xl">
+          <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-[--color-ink-4]" />
+          <form method="GET" action="/dashboard/search">
             <input 
               type="text" 
-              placeholder="Search evidence..." 
-              className="pl-9 pr-4 py-2 bg-[--color-surface-2] border border-[--color-rule] focus:border-[--color-ink-3] outline-none font-editorial text-sm w-64"
+              name="q"
+              placeholder="Search media..." 
+              className="w-full pl-9 pr-4 py-2 bg-[--color-surface-2] border border-[--color-rule-light] rounded-lg focus:border-[--color-ink-3] outline-none text-sm font-bold"
             />
-          </div>
-          <button className="flex items-center gap-2 px-3 py-2 border border-[--color-rule] hover:bg-[--color-surface-2] transition-colors font-technical text-xs uppercase text-[--color-ink-2]">
-            <Filter className="w-3 h-3" />
-            Filter
-          </button>
-          <Link href="/dashboard/archive" className="flex items-center gap-2 px-3 py-2 border border-[--color-rule] hover:bg-[--color-surface-2] transition-colors font-technical text-xs uppercase text-[--color-ink-2]">
-            Archive
-          </Link>
+          </form>
+        </div>
+        <div className="flex gap-2">
+           <button className="px-4 py-2 bg-white border border-[--color-rule-light] rounded-lg text-xs font-bold text-[--color-ink-3] hover:text-[--color-ink] hover:bg-[--color-surface-2] flex items-center gap-2 transition-all">
+             Filter <span className="opacity-50">▾</span>
+           </button>
+           <button className="px-4 py-2 bg-white border border-[--color-rule-light] rounded-lg text-xs font-bold text-[--color-ink-3] hover:text-[--color-ink] hover:bg-[--color-surface-2] flex items-center gap-2 transition-all">
+             Sort <span className="opacity-50">▾</span>
+           </button>
         </div>
       </div>
 

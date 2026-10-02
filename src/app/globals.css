@@ -1,53 +1,49 @@
 @import "tailwindcss";
 
-/* ── Design tokens ────────────────────────────────────────────────────────── */
 @theme inline {
   /* Surfaces */
-  --color-background: #F7F6F2;
-  --color-background-alt: #FAFAF7;
+  --color-background: #F3F4F6;
   --color-surface: #FFFFFF;
-  --color-surface-2: #F2F1ED;
+  --color-surface-2: #F9FAFB;
+  --color-surface-3: #F3F4F6;
 
   /* Text */
-  --color-ink: #111111;
-  --color-ink-2: #666666;
-  --color-ink-3: #999999;
-  --color-ink-4: #CCCCCC;
+  --color-ink: #111827;
+  --color-ink-2: #374151;
+  --color-ink-3: #6B7280;
+  --color-ink-4: #9CA3AF;
 
   /* Borders */
-  --color-rule: #D8D6D0;
-  --color-rule-strong: #A09C90;
-  --color-rule-light: #E8E6DF;
+  --color-rule: #E5E7EB;
+  --color-rule-light: #F3F4F6;
 
-  /* Severity — all dark, restrained */
-  --color-critical: #8B0000;
-  --color-critical-bg: #FDF2F2;
-  --color-critical-rule: #DCA5A5;
-
-  --color-high: #8A6500;
-  --color-high-bg: #FDF4EE;
-  --color-high-rule: #DDB896;
-
-  --color-medium: #8A6500;
-  --color-medium-bg: #FDFAEE;
-  --color-medium-rule: #D9CA96;
-
-  --color-low: #245C3A;
-  --color-low-bg: #F2FAF4;
-  --color-low-rule: #96C8A5;
-
-  --color-info: #315A78;
-  --color-info-bg: #F2F6FA;
-  --color-info-rule: #96B0C8;
+  /* Primary Brand Palette (Reference Green) */
+  --color-primary: #175e3a; /* Dark green from ref */
+  --color-primary-light: #2da461; /* Lighter green */
+  --color-primary-bg: #e6f4ea; /* Very light green tint */
+  
+  /* Semantic */
+  --color-healthy: #10B981;
+  --color-warning: #F59E0B;
+  --color-critical: #EF4444;
+  --color-active: #3B82F6;
 
   /* Typography */
-  --font-editorial: Georgia, "Times New Roman", Times, serif;
-  --font-mono: "Courier New", Courier, monospace;
-  --font-ui: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+  --font-sans: "Inter", "Plus Jakarta Sans", system-ui, -apple-system, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* Shadows (Soft, modern SaaS) */
+  --shadow-card: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+  --shadow-floating: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+  
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
 }
 
-/* ── Base ─────────────────────────────────────────────────────────────────── */
 *, *::before, *::after {
   box-sizing: border-box;
 }
@@ -56,28 +52,31 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-rendering: optimizeLegibility;
 }
 
 body {
   background-color: var(--color-background);
   color: var(--color-ink);
-  font-family: var(--font-ui);
-  font-size: 0.9375rem;
-  line-height: 1.6;
+  font-family: var(--font-sans);
+  line-height: 1.5;
 }
 
-/* ── Typography utilities ─────────────────────────────────────────────────── */
-.font-editorial {
-  font-family: var(--font-editorial);
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-rule); border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: var(--color-ink-4); }
+
+/* Utilities */
+.text-balance {
+  text-wrap: balance;
 }
 
-.font-technical {
-  font-family: var(--font-mono);
-}
-
-.font-ui {
-  font-family: var(--font-ui);
+.card {
+  background-color: var(--color-surface);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-card);
+  padding: 1.5rem;
 }
 
 /* ── Eyebrow / label ──────────────────────────────────────────────────────── */

@@ -59,15 +59,19 @@ export function CommandPalette() {
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "ArrowDown") {
       e.preventDefault();
-      setActiveIndex((prev) => (prev + 1) % filteredCommands.length);
+      setActiveIndex((prev) => (prev + 1) % (filteredCommands.length || 1));
     }
     if (e.key === "ArrowUp") {
       e.preventDefault();
-      setActiveIndex((prev) => (prev - 1 + filteredCommands.length) % filteredCommands.length);
+      setActiveIndex((prev) => (prev - 1 + (filteredCommands.length || 1)) % (filteredCommands.length || 1));
     }
-    if (e.key === "Enter" && filteredCommands.length > 0) {
+    if (e.key === "Enter") {
       e.preventDefault();
-      handleSelect(filteredCommands[activeIndex].path);
+      if (filteredCommands.length > 0) {
+        handleSelect(filteredCommands[activeIndex].path);
+      } else if (search.trim()) {
+        handleSelect(`/dashboard/search?q=${encodeURIComponent(search.trim())}`);
+      }
     }
   };
 
@@ -101,8 +105,14 @@ export function CommandPalette() {
         
         <div className="max-h-[50vh] overflow-y-auto" ref={listRef}>
           {filteredCommands.length === 0 ? (
-            <div className="px-6 py-12 text-center text-[--color-ink-4] text-xs tracking-widest uppercase">
-              No results found for &quot;{search}&quot;
+            <div className="px-6 py-12 text-center flex flex-col gap-2">
+              <span className="text-[--color-ink-4] text-xs tracking-widest uppercase">No commands found for &quot;{search}&quot;</span>
+              <button 
+                onClick={() => handleSelect(`/dashboard/search?q=${encodeURIComponent(search.trim())}`)}
+                className="text-blue-500 font-bold text-sm hover:underline"
+              >
+                Press Enter to search Cloudinary assets →
+              </button>
             </div>
           ) : (
             <div className="py-2">

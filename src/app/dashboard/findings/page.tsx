@@ -73,10 +73,10 @@ export default async function FindingsPage({
     return (
       <Link
         href={`/dashboard/findings?filter=${value}`}
-        className={`px-3 py-1 text-xs font-technical uppercase tracking-widest border transition-colors ${
+        className={`px-3 py-1.5 text-[11px] font-bold uppercase tracking-widest rounded-lg border transition-all ${
           isActive
-            ? "border-[--color-ink] bg-[--color-ink] text-[--color-background]"
-            : "border-[--color-rule-strong] text-[--color-ink-3] hover:border-[--color-ink]"
+            ? "border-[--color-ink] bg-[--color-ink] text-white shadow-sm"
+            : "border-[--color-rule-light] bg-white text-[--color-ink-3] hover:border-[--color-ink-4] hover:text-[--color-ink]"
         }`}
       >
         {label}
@@ -85,59 +85,46 @@ export default async function FindingsPage({
   };
 
   return (
-    <div className="px-8 lg:px-12 pt-8 pb-24 max-w-[1400px] mx-auto w-full">
-      <Breadcrumbs items={[
-        { label: "INTELLIGENCE" },
-        { label: "FINDINGS" }
-      ]} />
-
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8 border-b border-[--color-rule] pb-6">
+    <div className="max-w-[1400px] mx-auto space-y-8">
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4 border-b border-[--color-rule-light] pb-6">
         <div>
-          <h1 className="font-editorial text-3xl tracking-wide uppercase text-[--color-ink] mb-3">
-            Security Findings
-          </h1>
-          <p className="font-ui text-sm text-[--color-ink-2] leading-relaxed">
-            Observed signals and inferred risks across all analyzed evidence.
-          </p>
+          <h1 className="text-3xl font-bold text-[--color-ink] tracking-tight mb-2">Findings Console</h1>
+          <p className="text-sm font-semibold text-[--color-ink-3]">Observed signals and inferred risks across all analyzed media.</p>
         </div>
-        <div className="flex flex-col items-start md:items-end gap-2 text-right">
-          <div className="font-technical text-[10px] tracking-widest text-[--color-ink-4] uppercase mb-1">
-            ACTIVE DATABASE
-          </div>
-          <div className="font-technical text-sm text-[--color-ink]">
-            SECUREFLOW AI POSTGRES
-          </div>
+        <div className="flex items-center gap-3">
+          <Link href="/dashboard/analysis/new" className="px-4 py-2 bg-[--color-ink] text-white rounded-lg text-xs font-bold shadow-sm hover:bg-[--color-primary] transition-colors">
+            + Run Analysis
+          </Link>
         </div>
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-px bg-[--color-rule] border border-[--color-rule] mb-8">
-        <div className="bg-[--color-surface] p-6 hover:bg-[--color-surface-2] transition-colors group cursor-default">
-          <p className="font-technical text-[10px] tracking-widest text-[--color-ink-4] uppercase mb-4">TOTAL FINDINGS</p>
-          <p className="font-editorial text-4xl text-[--color-ink] mb-2">{total.toString().padStart(2, '0')}</p>
-          <p className="font-technical text-[10px] tracking-widest text-[--color-ink-3] uppercase">ACROSS ALL CASES</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        <div className="bg-white p-6 border border-[--color-rule-light] rounded-2xl shadow-sm">
+          <p className="text-xs font-bold tracking-widest text-[--color-ink-4] uppercase mb-4">TOTAL FINDINGS</p>
+          <p className="text-4xl font-bold text-[--color-ink] mb-2">{total}</p>
+          <p className="text-[10px] font-bold tracking-widest text-[--color-ink-3] uppercase">Across All Media</p>
         </div>
-        <div className="bg-[--color-surface] p-6 hover:bg-[--color-surface-2] transition-colors group cursor-default">
-          <p className="font-technical text-[10px] tracking-widest text-[--color-ink-4] uppercase mb-4">OPEN</p>
-          <p className="font-editorial text-4xl text-[--color-low] mb-2">{openCount.toString().padStart(2, '0')}</p>
-          <p className="font-technical text-[10px] tracking-widest text-[--color-ink-3] uppercase">REQUIRES REVIEW</p>
+        <div className="bg-white p-6 border border-[--color-rule-light] rounded-2xl shadow-sm">
+          <p className="text-xs font-bold tracking-widest text-[--color-ink-4] uppercase mb-4">OPEN</p>
+          <p className="text-4xl font-bold text-[--color-warning] mb-2">{openCount}</p>
+          <p className="text-[10px] font-bold tracking-widest text-[--color-ink-3] uppercase">Requires Review</p>
         </div>
-        <div className="bg-[--color-surface] p-6 hover:bg-[--color-surface-2] transition-colors group cursor-default">
-          <p className="font-technical text-[10px] tracking-widest text-[--color-ink-4] uppercase mb-4">REVIEWED</p>
-          <p className="font-editorial text-4xl text-[--color-ink] mb-2">{reviewCount.toString().padStart(2, '0')}</p>
-          <p className="font-technical text-[10px] tracking-widest text-[--color-ink-3] uppercase">IN PROGRESS</p>
+        <div className="bg-white p-6 border border-[--color-rule-light] rounded-2xl shadow-sm">
+          <p className="text-xs font-bold tracking-widest text-[--color-ink-4] uppercase mb-4">REVIEWED</p>
+          <p className="text-4xl font-bold text-[--color-ink] mb-2">{reviewCount}</p>
+          <p className="text-[10px] font-bold tracking-widest text-[--color-ink-3] uppercase">In Progress</p>
         </div>
-        <div className="bg-[--color-surface] p-6 hover:bg-[--color-surface-2] transition-colors group cursor-default">
-          <p className="font-technical text-[10px] tracking-widest text-[--color-ink-4] uppercase mb-4">RESOLVED</p>
-          <p className="font-editorial text-4xl text-[--color-ink-4] mb-2">{resolvedCount.toString().padStart(2, '0')}</p>
-          <p className="font-technical text-[10px] tracking-widest text-[--color-ink-3] uppercase">ARCHIVED</p>
+        <div className="bg-white p-6 border border-[--color-rule-light] rounded-2xl shadow-sm">
+          <p className="text-xs font-bold tracking-widest text-[--color-ink-4] uppercase mb-4">RESOLVED</p>
+          <p className="text-4xl font-bold text-[--color-ink-4] mb-2">{resolvedCount}</p>
+          <p className="text-[10px] font-bold tracking-widest text-[--color-ink-3] uppercase">Archived</p>
         </div>
       </div>
 
       {/* Filter */}
-      <div className="mb-8">
-        <p className="font-technical text-[10px] tracking-widest text-[--color-ink-4] uppercase mb-3">FILTER</p>
-        <div className="flex flex-wrap gap-2">
+      <div className="bg-white p-4 rounded-xl border border-[--color-rule-light] shadow-sm mb-8 flex items-center justify-between">
+        <div className="flex gap-2">
           <FilterLink label="All" value="all" />
           <FilterLink label="Critical" value="critical" />
           <FilterLink label="High" value="high" />
@@ -149,10 +136,10 @@ export default async function FindingsPage({
       </div>
 
       {/* Findings List */}
-      <div className="border border-[--color-rule] bg-[--color-surface]">
+      <div className="bg-white border border-[--color-rule-light] rounded-2xl shadow-sm overflow-hidden">
         {allFindings.length === 0 ? (
           <div className="py-16 text-center">
-            <p className="font-editorial text-lg text-[--color-ink-3] italic">No findings match this filter.</p>
+            <p className="text-sm font-semibold text-[--color-ink-3]">No findings match this filter.</p>
           </div>
         ) : (
           <div className="divide-y divide-[--color-rule-light]">
@@ -160,21 +147,21 @@ export default async function FindingsPage({
               <div key={finding.id} className="p-6 hover:bg-[--color-surface-2] transition-colors group">
                 <div className="flex justify-between items-start mb-4">
                   <div>
-                    <p className="font-technical text-[10px] tracking-widest text-[--color-ink-4] uppercase mb-1">
+                    <p className="text-xs font-bold tracking-widest text-[--color-ink-4] uppercase mb-1">
                       FINDING
                     </p>
-                    <p className="font-editorial text-xl text-[--color-ink]">{finding.title}</p>
+                    <p className="text-lg font-bold text-[--color-ink]">{finding.title}</p>
                   </div>
-                  <span className={`font-technical text-[10px] uppercase tracking-widest px-2 py-1 border ${
-                    finding.status === "OPEN" ? "border-[--color-low] text-[--color-low]" : "border-[--color-rule-strong] text-[--color-ink]"
+                  <span className={`text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg border ${
+                    finding.status === "OPEN" ? "bg-red-50 text-red-700 border-red-200" : "bg-gray-50 border-[--color-rule-light] text-[--color-ink]"
                   }`}>
                     {finding.status}
                   </span>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 font-technical text-xs mt-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs font-bold mt-6">
                   <div>
-                    <span className="text-[--color-ink-4] uppercase tracking-widest block mb-1">Evidence</span>
+                    <span className="text-[--color-ink-4] uppercase tracking-widest block mb-1">Media</span>
                     <span className="text-[--color-ink] truncate block">{finding.evidence}</span>
                   </div>
                   <div>
@@ -188,9 +175,9 @@ export default async function FindingsPage({
                     </div>
                     <Link
                       href={`/dashboard/evidence/${finding.analysis_id}`}
-                      className="text-[--color-ink-3] hover:text-[--color-ink] flex items-center gap-1 uppercase tracking-widest transition-colors"
+                      className="text-[--color-ink] hover:text-[--color-primary] bg-white border border-[--color-rule-light] px-3 py-1.5 rounded-lg flex items-center gap-1 uppercase tracking-widest transition-colors shadow-sm"
                     >
-                      VIEW <ArrowRight className="w-3 h-3" />
+                      VIEW
                     </Link>
                   </div>
                 </div>

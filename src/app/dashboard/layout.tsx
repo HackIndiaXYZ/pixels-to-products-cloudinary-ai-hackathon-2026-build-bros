@@ -1,160 +1,96 @@
 import Link from "next/link";
+import Image from "next/image";
 import { CommandPalette } from "@/components/ui/command-palette";
 import { GlobalSearch } from "@/components/ui/global-search";
-import { 
-  LayoutDashboard, 
-  FilePlus, 
-  ShieldAlert, 
-  FileText, 
-  Database, 
-  Archive as ArchiveIcon, 
-  GitBranch, 
-  Activity, 
-  Settings 
-} from "lucide-react";
+import { SidebarNavigation } from "@/components/ui/sidebar-navigation";
+import { SidebarHealthFooter } from "@/components/ui/sidebar-health-footer";
+import { CreatorEasterEgg } from "@/components/ui/creator-easter-egg";
+import { createClient } from "@/lib/supabase/server";
+import { Bell, FilePlus } from "lucide-react";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
+  const supabase = await createClient();
+
+  // Fetch real counts — only what sidebar badges show
+  const [
+    { count: evidenceCount },
+    { count: findingsCount },
+    { count: reportsCount }
+  ] = await Promise.all([
+    supabase.from("analyses").select("*", { count: "exact", head: true }),
+    supabase.from("risks").select("*", { count: "exact", head: true }),
+    supabase.from("analyses").select("*", { count: "exact", head: true })
+  ]);
+
+  // Real config state from env — no hardcoding
+  const isCloudinaryConfigured = !!(
+    process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME &&
+    process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY &&
+    process.env.CLOUDINARY_API_SECRET
+  );
+  const isOpenAIConfigured = !!process.env.OPENAI_API_KEY;
+  const isSupabaseConfigured = !!(
+    process.env.NEXT_PUBLIC_SUPABASE_URL &&
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  );
+
   return (
-    <div
-      className="min-h-screen flex relative"
-      style={{ backgroundColor: "var(--color-background)" }}
-    >
+    <div className="min-h-screen flex bg-[--color-background] text-[--color-ink] overflow-hidden">
       <CommandPalette />
-      
-      {/* ── Sidebar ──────────────────────────────────────────────────────── */}
-      <aside
-        className="w-[260px] flex-shrink-0 flex flex-col sticky top-0 h-screen"
-        style={{ borderRight: "1px solid var(--color-rule)", backgroundColor: "var(--color-surface)" }}
-      >
-        {/* Wordmark */}
-        <div
-          className="px-6 py-5"
-          style={{ borderBottom: "1px solid var(--color-rule)" }}
-        >
-          <p className="font-ui text-[0.8125rem] font-bold tracking-[0.15em] uppercase" style={{ color: "var(--color-ink)" }}>
-            SECUREFLOW AI
-          </p>
-          <p className="font-editorial text-[0.75rem] mt-1" style={{ color: "var(--color-ink-3)", fontStyle: "italic" }}>
-            Security Intelligence
-          </p>
-        </div>
 
-        {/* Navigation */}
-        <nav className="flex-1 px-4 py-6 space-y-8 overflow-y-auto">
-          {/* COMMAND CENTER */}
-          <div>
-            <p className="eyebrow px-3 mb-2" style={{ color: "var(--color-ink-3)" }}>
-              COMMAND CENTER
-            </p>
-            <div className="space-y-0.5">
-              <Link href="/dashboard" className="flex items-center gap-3 px-3 py-2 text-[0.8125rem] transition-colors hover:bg-[--color-surface-2] rounded-sm font-medium" style={{ color: "var(--color-ink)" }}>
-                <LayoutDashboard className="w-4 h-4 text-[--color-ink-3]" /> Overview
-              </Link>
-              <Link href="/dashboard/analysis/new" className="flex items-center gap-3 px-3 py-2 text-[0.8125rem] transition-colors hover:bg-[--color-surface-2] rounded-sm" style={{ color: "var(--color-ink-2)" }}>
-                <FilePlus className="w-4 h-4 text-[--color-ink-3]" /> New Analysis
-              </Link>
-            </div>
-          </div>
+      {/* ── Sidebar ───────────────────────────────────────────────────────── */}
+      <aside className="w-[260px] flex-shrink-0 flex flex-col h-screen bg-white border-r border-[--color-rule] z-20">
 
-          {/* INTELLIGENCE */}
-          <div>
-            <p className="eyebrow px-3 mb-2" style={{ color: "var(--color-ink-3)" }}>
-              INTELLIGENCE
-            </p>
-            <div className="space-y-0.5">
-              <Link href="/dashboard/findings" className="flex items-center gap-3 px-3 py-2 text-[0.8125rem] transition-colors hover:bg-[--color-surface-2] rounded-sm" style={{ color: "var(--color-ink-2)" }}>
-                <ShieldAlert className="w-4 h-4 text-[--color-ink-3]" /> Findings
-              </Link>
-              <Link href="/dashboard/reports" className="flex items-center gap-3 px-3 py-2 text-[0.8125rem] transition-colors hover:bg-[--color-surface-2] rounded-sm" style={{ color: "var(--color-ink-2)" }}>
-                <FileText className="w-4 h-4 text-[--color-ink-3]" /> Reports
-              </Link>
-              <Link href="/dashboard/evidence" className="flex items-center gap-3 px-3 py-2 text-[0.8125rem] transition-colors hover:bg-[--color-surface-2] rounded-sm" style={{ color: "var(--color-ink-2)" }}>
-                <Database className="w-4 h-4 text-[--color-ink-3]" /> Evidence
-              </Link>
-              <Link href="/dashboard/archive" className="flex items-center gap-3 px-3 py-2 text-[0.8125rem] transition-colors hover:bg-[--color-surface-2] rounded-sm" style={{ color: "var(--color-ink-2)" }}>
-                <ArchiveIcon className="w-4 h-4 text-[--color-ink-3]" /> Archive
-              </Link>
-            </div>
-          </div>
+        {/* Brand / Logo with Easter Egg */}
+        <CreatorEasterEgg />
 
-          {/* PIPELINE */}
-          <div>
-            <p className="eyebrow px-3 mb-2" style={{ color: "var(--color-ink-3)" }}>
-              PIPELINE
-            </p>
-            <div className="space-y-0.5">
-              <Link href="/dashboard/pipeline" className="flex items-center gap-3 px-3 py-2 text-[0.8125rem] transition-colors hover:bg-[--color-surface-2] rounded-sm" style={{ color: "var(--color-ink-2)" }}>
-                <GitBranch className="w-4 h-4 text-[--color-ink-3]" /> Pipeline
-              </Link>
-              <Link href="/dashboard/status" className="flex items-center gap-3 px-3 py-2 text-[0.8125rem] transition-colors hover:bg-[--color-surface-2] rounded-sm" style={{ color: "var(--color-ink-2)" }}>
-                <Activity className="w-4 h-4 text-[--color-ink-3]" /> Status
-              </Link>
-            </div>
-          </div>
+        {/* Navigation — scrollable */}
+        <SidebarNavigation
+          evidenceCount={evidenceCount || 0}
+          findingsCount={findingsCount || 0}
+          reportsCount={reportsCount || 0}
+        />
 
-          {/* SYSTEM */}
-          <div>
-            <p className="eyebrow px-3 mb-2" style={{ color: "var(--color-ink-3)" }}>
-              SYSTEM
-            </p>
-            <div className="space-y-0.5">
-              <Link href="/dashboard/configuration" className="flex items-center gap-3 px-3 py-2 text-[0.8125rem] transition-colors hover:bg-[--color-surface-2] rounded-sm" style={{ color: "var(--color-ink-2)" }}>
-                <Settings className="w-4 h-4 text-[--color-ink-3]" /> Configuration
-              </Link>
-            </div>
-          </div>
-        </nav>
-
-        {/* Footer Status */}
-        <div className="px-6 py-5 space-y-4 bg-[--color-background-alt]" style={{ borderTop: "1px solid var(--color-rule)" }}>
-          <div className="flex items-center justify-between">
-            <p className="eyebrow">CLOUDINARY</p>
-            <div className="flex items-center gap-2 font-technical text-xs" style={{ color: "var(--color-ink-2)" }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-low)" }}></span>
-              CONNECTED
-            </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <p className="eyebrow">ENGINE</p>
-            <div className="flex items-center gap-2 font-technical text-xs" style={{ color: "var(--color-ink-2)" }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-low)" }}></span>
-              LOCAL RULES
-            </div>
-          </div>
-          <div className="flex items-center justify-between">
-            <p className="eyebrow">DATABASE</p>
-            <div className="flex items-center gap-2 font-technical text-xs" style={{ color: "var(--color-ink-2)" }}>
-              <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "var(--color-low)" }}></span>
-              CONNECTED
-            </div>
-          </div>
-        </div>
+        {/* Health footer — fixed at bottom */}
+        <SidebarHealthFooter
+          cloudinary={isCloudinaryConfigured}
+          openai={isOpenAIConfigured}
+          supabase={isSupabaseConfigured}
+        />
       </aside>
 
-      {/* ── Main ─────────────────────────────────────────────────────────── */}
-      <main className="flex-1 overflow-auto flex flex-col">
-        {/* Global Search Header */}
-        <div 
-          className="h-[65px] px-8 flex items-center justify-between sticky top-0 z-10 bg-[--color-background]/90 backdrop-blur-md"
-          style={{ borderBottom: "1px solid var(--color-rule-light)" }}
-        >
-          <GlobalSearch />
-          <div className="flex items-center gap-6">
-            <div className="font-technical text-[10px] tracking-widest flex items-center gap-2 text-[--color-ink-3] uppercase">
-              <span className="px-1.5 py-0.5 border border-[--color-rule-strong] rounded-sm">⌘</span>
-              <span>+</span>
-              <span className="px-1.5 py-0.5 border border-[--color-rule-strong] rounded-sm">K</span>
+      {/* ── Main content ──────────────────────────────────────────────────── */}
+      <main className="flex-1 overflow-auto flex flex-col h-screen min-w-0">
+
+        {/* Top bar */}
+        <div className="h-16 px-6 flex items-center justify-between flex-shrink-0 sticky top-0 z-10 bg-[--color-background]/90 backdrop-blur-md border-b border-[--color-rule]">
+          <div className="flex-1 max-w-sm">
+            <div className="relative flex items-center w-full h-9 rounded-lg bg-white border border-[--color-rule] px-3 shadow-sm">
+              <GlobalSearch />
             </div>
-            <div className="flex items-center gap-2 font-technical text-xs text-[--color-ink-3] uppercase tracking-widest">
-              <span className="w-2 h-2 border border-[--color-ink-3] rounded-full flex items-center justify-center">
-                <span className="w-1 h-1 bg-[--color-ink-3] rounded-full"></span>
-              </span>
-              <span>03</span>
+          </div>
+
+          <div className="flex items-center gap-3">
+            <Link
+              href="/dashboard/analysis/new"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 text-white rounded-lg font-bold text-xs shadow-sm hover:bg-blue-700 transition-colors"
+            >
+              <FilePlus className="w-3.5 h-3.5" />
+              New Analysis
+            </Link>
+            <button className="w-8 h-8 rounded-lg bg-white border border-[--color-rule] flex items-center justify-center text-[--color-ink-3] hover:text-[--color-ink] transition-colors shadow-sm">
+              <Bell className="w-4 h-4" />
+            </button>
+            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 to-violet-500 flex items-center justify-center text-white font-bold text-xs shadow-sm">
+              A
             </div>
           </div>
         </div>
-        
-        {children}
+
+        {/* Page content */}
+        <div className="flex-1 p-6 overflow-auto">
+          {children}
+        </div>
       </main>
     </div>
   );
