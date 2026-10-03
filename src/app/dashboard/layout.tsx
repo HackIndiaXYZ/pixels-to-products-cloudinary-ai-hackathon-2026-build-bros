@@ -5,16 +5,22 @@ import type { ServiceStatus } from "@/components/ui/sidebar-health-footer";
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
 
-  // Fetch real counts — only what sidebar badges show
-  const [
-    { count: evidenceCount },
-    { count: findingsCount },
-    { count: reportsCount }
-  ] = await Promise.all([
-    supabase.from("analyses").select("*", { count: "exact", head: true }),
-    supabase.from("risks").select("*", { count: "exact", head: true }),
-    supabase.from("analyses").select("*", { count: "exact", head: true })
-  ]);
+  let evidenceCount = 0;
+  let findingsCount = 0;
+  let reportsCount = 0;
+
+  try {
+    const [evidenceRes, findingsRes, reportsRes] = await Promise.all([
+      supabase.from("analyses").select("*", { count: "exact", head: true }),
+      supabase.from("risks").select("*", { count: "exact", head: true }),
+      supabase.from("analyses").select("*", { count: "exact", head: true })
+    ]);
+    evidenceCount = evidenceRes.count || 0;
+    findingsCount = findingsRes.count || 0;
+    reportsCount = reportsRes.count || 0;
+  } catch (err) {
+    console.warn("Could not fetch sidebar counts during layout render:", err);
+  }
 
   // Real config state from env — no hardcoding
   const isCloudinaryConfigured = !!(
