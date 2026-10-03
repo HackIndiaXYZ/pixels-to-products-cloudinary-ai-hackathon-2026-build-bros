@@ -18,6 +18,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://pixels-to-products-cloudinary-ai-hackathon-2026-build-bros.vercel.app"),
   title: {
     default: "SecureFlow AI — Media Intelligence Platform",
     template: "%s — SecureFlow AI",
