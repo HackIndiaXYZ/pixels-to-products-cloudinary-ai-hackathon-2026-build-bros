@@ -1,15 +1,13 @@
 import { createAdminClient as createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/app-shell/AppShell";
 import type { ServiceStatus } from "@/components/ui/sidebar-health-footer";
-
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const supabase = await createClient();
-
   let evidenceCount = 0;
   let findingsCount = 0;
   let reportsCount = 0;
 
   try {
+    const supabase = await createClient();
     const [evidenceRes, findingsRes, reportsRes] = await Promise.all([
       supabase.from("analyses").select("*", { count: "exact", head: true }),
       supabase.from("risks").select("*", { count: "exact", head: true }),
@@ -19,7 +17,7 @@ export default async function DashboardLayout({ children }: { children: React.Re
     findingsCount = findingsRes.count || 0;
     reportsCount = reportsRes.count || 0;
   } catch (err) {
-    console.warn("Could not fetch sidebar counts during layout render:", err);
+    console.warn("Could not fetch sidebar counts during layout render (Supabase might not be configured):", err);
   }
 
   // Real config state from env — no hardcoding
