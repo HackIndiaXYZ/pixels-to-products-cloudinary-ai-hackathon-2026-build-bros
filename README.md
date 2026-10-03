@@ -6,7 +6,7 @@ and reusable assets through one continuous workflow.
 
 **Upload → Analyze → Process → Transform → Optimize → Save**
 
-[Live Demo] · [Demo Video] · [GitHub Repository]
+[Live Demo](https://pixels-to-products-cloudinary-ai-ha-sigma.vercel.app/) · [Demo Video](https://www.youtube.com/watch?v=q5arsdyfGIM) · [GitHub Repository](https://github.com/HackIndiaXYZ/pixels-to-products-cloudinary-ai-hackathon-2026-build-bros) · [LinkedIn Post](https://lnkd.in/p/d8_6NF9R)
 
 Built for the **Pixels to Products — Cloudinary AI Hackathon 2026**
 
