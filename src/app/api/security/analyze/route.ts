@@ -19,21 +19,7 @@ function structuredError(
 
 /** Build a Supabase client, trying admin first then anon. */
 async function getSupabaseClient() {
-  try {
-    return await createAdminClient();
-  } catch (configErr) {
-    if (
-      configErr instanceof ConfigurationError &&
-      configErr.code === "SUPABASE_SERVICE_ROLE_KEY_MISSING"
-    ) {
-      try {
-        return await createClient();
-      } catch {
-        throw new Error("SUPABASE_CONFIG_MISSING");
-      }
-    }
-    throw configErr;
-  }
+  return await createAdminClient();
 }
 
 export async function POST(req: Request) {

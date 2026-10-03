@@ -133,15 +133,14 @@ export async function GET() {
     results.cloudinary.detail = e instanceof Error ? e.message : String(e);
   }
 
-  // 5. OpenAI — verify key exists and authenticates
+  // 5. OpenAI — verify key exists and authenticates (Optional)
   try {
     const aiStart = Date.now();
     const openAIKey = process.env.OPENAI_API_KEY;
 
     if (!openAIKey || openAIKey.trim() === "") {
       results.openai.status = "Missing Key";
-      results.openai.detail =
-        "OPENAI_API_KEY is not set in environment variables.";
+      results.openai.detail = "Optional enhancement is not configured. (OPENAI_API_KEY missing)";
     } else {
       const res = await fetch("https://api.openai.com/v1/models", {
         headers: { Authorization: `Bearer ${openAIKey}` },

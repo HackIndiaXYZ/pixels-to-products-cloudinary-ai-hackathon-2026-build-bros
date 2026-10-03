@@ -291,7 +291,7 @@ export function EvidenceLibraryClient({ analyses }: { analyses: any[] }) {
                  </div>
                  <div className="flex items-start gap-4 relative">
                    <div className="w-3 h-3 rounded-full border-2 border-white bg-emerald-500 shadow-sm shrink-0" />
-                   <div className="flex-1 -mt-1"><p className="text-xs font-bold text-slate-700">Security reasoning applied</p></div>
+                   <div className="flex-1 -mt-1"><p className="text-xs font-bold text-slate-700">Rule analysis applied</p></div>
                    <span className="text-[10px] font-mono text-slate-400">5m</span>
                  </div>
                </div>

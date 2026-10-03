@@ -16,7 +16,7 @@ const EXAMPLES = [
 
 type Mode = "evidence" | "text";
 
-type UploadState = "EMPTY" | "UPLOADING" | "UPLOADED" | "ANALYZING" | "CLASSIFYING" | "MODERATING" | "READY" | "REASONING" | "DONE" | "ERROR";
+type UploadState = "EMPTY" | "UPLOADING" | "UPLOADED" | "ANALYZING" | "CLASSIFYING" | "MODERATING" | "READY" | "RULE_EVALUATION" | "DONE" | "ERROR";
 
 interface MediaIntelligence {
   detectedContent?: string | null;
@@ -125,9 +125,9 @@ export function AnalysisForm() {
     }
   }
 
-  async function handleSecurityReasoning() {
+  async function handleRuleAnalysis() {
     setSubmitting(true);
-    setUploadState("REASONING");
+    setUploadState("RULE_EVALUATION");
     setError(null);
     try {
       const payload = {
@@ -141,7 +141,7 @@ export function AnalysisForm() {
         body: JSON.stringify(payload),
       });
       const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Security reasoning failed");
+      if (!res.ok) throw new Error(data.error || "Rule analysis failed");
       
       setSecurityResult(data.analysis);
       setUploadState("DONE");
@@ -151,7 +151,7 @@ export function AnalysisForm() {
         router.push(`/dashboard/evidence/${data.analysisId}`);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Security reasoning failed");
+      setError(err instanceof Error ? err.message : "Rule analysis failed");
       setUploadState("READY"); // Revert back so they can retry
     } finally {
       setSubmitting(false);
@@ -232,8 +232,8 @@ export function AnalysisForm() {
                     <p className="font-technical text-xs text-[--color-ink]">Cloudinary</p>
                   </div>
                   <div>
-                    <p className="font-ui text-sm text-[--color-ink-3] mb-1">Reasoning</p>
-                    <p className="font-technical text-xs text-[--color-ink]">Local Rules</p>
+                    <p className="font-ui text-sm text-[--color-ink-3] mb-1">Analysis Engine</p>
+                    <p className="font-technical text-xs text-[--color-ink]">Rule Engine</p>
                   </div>
                 </div>
               </div>
@@ -250,7 +250,7 @@ export function AnalysisForm() {
                 <span className="text-[--color-ink-4]">→</span>
                 <span>MODERATE</span>
                 <span className="text-[--color-ink-4]">→</span>
-                <span>REASON</span>
+                <span>RULES</span>
                 <span className="text-[--color-ink-4]">→</span>
                 <span>REPORT</span>
               </div>
@@ -335,14 +335,14 @@ export function AnalysisForm() {
                       { state: "MODERATING", label: "04 MODERATING", desc: "Content evaluation" },
                       { state: "READY", label: "05 READY", desc: "Evidence ready for security analysis" },
                     ].map((step) => {
-                      const states = ["EMPTY", "UPLOADING", "UPLOADED", "ANALYZING", "CLASSIFYING", "MODERATING", "READY", "REASONING", "DONE"];
+                      const states = ["EMPTY", "UPLOADING", "UPLOADED", "ANALYZING", "CLASSIFYING", "MODERATING", "READY", "RULE_EVALUATION", "DONE"];
                       const currentIdx = states.indexOf(uploadState as string);
                       const stepIdx = states.indexOf(step.state);
                       
                       let statusIcon;
                       let statusDesc = step.desc;
 
-                      if (currentIdx > stepIdx || uploadState === "READY" || uploadState === "REASONING" || uploadState === "DONE") {
+                      if (currentIdx > stepIdx || uploadState === "READY" || uploadState === "RULE_EVALUATION" || uploadState === "DONE") {
                         statusIcon = <CheckCircle2 className="w-4 h-4 text-[--color-low]" />;
                         // If diagnostic failed, we show Add-on required
                         if (step.state === "ANALYZING" && intelligence.diagnostics?.vision === "ADDON_REQUIRED") {
@@ -420,13 +420,13 @@ export function AnalysisForm() {
                     </div>
                   )}
 
-                  {(uploadState === "REASONING" || uploadState === "DONE") && (
+                  {(uploadState === "RULE_EVALUATION" || uploadState === "DONE") && (
                     <div className="animate-in stagger-2 mt-8">
                       <p className="eyebrow mb-3 pt-4 border-t border-[--color-rule-light]">SECURITY ANALYSIS</p>
-                      {uploadState === "REASONING" ? (
+                      {uploadState === "RULE_EVALUATION" ? (
                         <div className="flex items-center gap-2 text-[--color-ink-3]">
                           <Loader2 className="w-4 h-4 animate-spin" />
-                          <span className="font-technical text-xs">Reasoning...</span>
+                          <span className="font-technical text-xs">Evaluating Rules...</span>
                         </div>
                       ) : securityResult && (
                         <div className="space-y-6">
@@ -490,7 +490,7 @@ export function AnalysisForm() {
                   <Button variant="ghost" size="sm" type="button" onClick={() => { setUploadState("EMPTY"); setEvidence(null); setIntelligence({}); setSecurityResult(null); }} disabled={isProcessing}>
                     Reset
                   </Button>
-                  <Button variant="primary" size="md" type="button" onClick={handleSecurityReasoning} disabled={isProcessing || !title || (uploadState !== "READY") || submitting}>
+                  <Button variant="primary" size="md" type="button" onClick={handleRuleAnalysis} disabled={isProcessing || !title || (uploadState !== "READY") || submitting}>
                     {submitting ? "Analyzing..." : "Analyze Evidence"}
                   </Button>
                 </div>

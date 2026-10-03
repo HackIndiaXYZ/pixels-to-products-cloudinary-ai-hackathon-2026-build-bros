@@ -17,6 +17,7 @@ import {
   CheckCircle2,
   RefreshCw,
   Info,
+  Circle,
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { CldImage } from "next-cloudinary";
@@ -37,15 +38,19 @@ interface HealthData {
   cloudinary: { status: ServiceStatus; latency: number; detail?: string };
   supabase: { status: ServiceStatus; latency: number; detail?: string };
   supabase_admin: { status: ServiceStatus; latency: number; detail?: string };
+  ruleEngine: { status: ServiceStatus; latency: number; detail?: string };
   openai: { status: ServiceStatus; latency: number; detail?: string };
   timestamp: string;
 }
 
 // ─── Service Status Indicator ────────────────────────────────────────────────
 
-function StatusDot({ status }: { status: ServiceStatus }) {
+function StatusDot({ status, isOptional = false }: { status: ServiceStatus, isOptional?: boolean }) {
   if (status === "loading") {
     return <Loader2 className="w-3 h-3 text-slate-400 animate-spin" />;
+  }
+  if (status === "Missing Key" && isOptional) {
+    return <Circle className="w-3 h-3 text-slate-400" />;
   }
   if (status === "Operational") {
     return <CheckCircle2 className="w-3 h-3 text-emerald-500" />;
@@ -63,14 +68,10 @@ function StatusDot({ status }: { status: ServiceStatus }) {
   return <XCircle className="w-3 h-3 text-slate-400" />;
 }
 
-function statusText(status: ServiceStatus): string {
-  if (status === "loading") return "Checking…";
-  return status;
-}
-
-function statusColor(status: ServiceStatus): string {
+function statusColor(status: ServiceStatus, isOptional = false): string {
   if (status === "Operational") return "text-emerald-700";
   if (status === "Degraded") return "text-amber-700";
+  if (status === "Missing Key" && isOptional) return "text-slate-500";
   if (
     status === "Configuration Error" ||
     status === "Missing Key" ||
@@ -78,6 +79,12 @@ function statusColor(status: ServiceStatus): string {
   )
     return "text-red-700";
   return "text-slate-500";
+}
+
+function statusText(status: ServiceStatus, isOptional = false): string {
+  if (status === "loading") return "Checking…";
+  if (status === "Missing Key" && isOptional) return "Not configured";
+  return status;
 }
 
 // ─── Hook: Real health data ───────────────────────────────────────────────────
@@ -88,6 +95,7 @@ function useHealthCheck() {
     cloudinary: { status: "loading", latency: 0 },
     supabase: { status: "loading", latency: 0 },
     supabase_admin: { status: "loading", latency: 0 },
+    ruleEngine: { status: "loading", latency: 0 },
     openai: { status: "loading", latency: 0 },
     timestamp: "",
   };
@@ -107,6 +115,7 @@ function useHealthCheck() {
         cloudinary: { status: "Offline", latency: 0 },
         supabase: { status: "Offline", latency: 0 },
         supabase_admin: { status: "Offline", latency: 0 },
+        ruleEngine: { status: "Offline", latency: 0 },
         openai: { status: "Offline", latency: 0 },
         timestamp: new Date().toISOString(),
       });
@@ -132,15 +141,17 @@ function BackendReadinessPanel() {
 
   const rows: { label: string; key: keyof Omit<HealthData, "timestamp"> }[] = [
     { label: "Cloudinary ingestion", key: "cloudinary" },
-    { label: "AI engine (OpenAI)", key: "openai" },
+    { label: "Rule engine", key: "ruleEngine" },
     { label: "Database (write access)", key: "supabase_admin" },
+    { label: "Optional AI enhancement", key: "openai" },
   ];
 
   const hasConfigError = rows.some(
     (r) =>
-      health[r.key].status === "Configuration Error" ||
-      health[r.key].status === "Missing Key" ||
-      health[r.key].status === "Authentication Failed"
+      r.key !== "openai" &&
+      (health[r.key].status === "Configuration Error" ||
+        health[r.key].status === "Missing Key" ||
+        health[r.key].status === "Authentication Failed")
   );
 
   return (
@@ -162,24 +173,26 @@ function BackendReadinessPanel() {
       <div className="space-y-2.5">
         {rows.map(({ label, key }) => {
           const svc = health[key];
+          const isOptional = key === "openai";
           const detail = (svc as { detail?: string }).detail;
           return (
             <div key={key}>
               <div className="flex items-center gap-2">
-                <StatusDot status={svc.status} />
+                <StatusDot status={svc.status} isOptional={isOptional} />
                 <span className="text-xs font-semibold text-slate-700 flex-1">
                   {label}
                 </span>
                 <span
-                  className={`text-[10px] font-bold ${statusColor(svc.status)}`}
+                  className={`text-[10px] font-bold ${statusColor(svc.status, isOptional)}`}
                 >
-                  {statusText(svc.status)}
+                  {statusText(svc.status, isOptional)}
                 </span>
               </div>
               {/* Show detail only for non-operational states */}
               {detail &&
                 svc.status !== "Operational" &&
-                svc.status !== "loading" && (
+                svc.status !== "loading" &&
+                (!isOptional || svc.status !== "Missing Key") && (
                   <div className="ml-5 mt-1 flex items-start gap-1.5">
                     <Info className="w-2.5 h-2.5 text-slate-400 flex-shrink-0 mt-0.5" />
                     <p className="text-[10px] text-slate-500 leading-snug">
@@ -425,7 +438,7 @@ export function EvidenceDropzone() {
     fileRef,
     evidence,
     title,
-    handleSecurityReasoning,
+    handleRuleAnalysis,
     submitting,
     error,
     pipelineError,
@@ -433,7 +446,7 @@ export function EvidenceDropzone() {
   } = useAnalysis();
 
   // "Ready" state: asset is uploaded and Cloudinary analysis is complete (or AI failed)
-  if (uploadState === "DONE" || uploadState === "REASONING" || uploadState === "READY" || uploadState === "AI_UNAVAILABLE") {
+  if (uploadState === "DONE" || uploadState === "RULE_EVALUATION" || uploadState === "READY" || uploadState === "AI_UNAVAILABLE") {
     return (
       <motion.div
         initial={{ opacity: 0, scale: 0.98 }}
@@ -470,13 +483,13 @@ export function EvidenceDropzone() {
           <PipelineErrorBanner
             error={error}
             pipelineError={pipelineError}
-            onRetry={handleSecurityReasoning}
+            onRetry={handleRuleAnalysis}
             submitting={submitting}
           />
 
           {/* Start analysis button */}
           <button
-            onClick={handleSecurityReasoning}
+            onClick={handleRuleAnalysis}
             disabled={submitting}
             className="w-full py-4 bg-slate-900 text-white rounded-xl font-bold text-sm hover:bg-slate-800 transition-colors shadow-lg shadow-slate-900/10 flex items-center justify-center gap-2 disabled:opacity-50"
           >
@@ -669,7 +682,7 @@ export function PipelineBento() {
           <div className="flex items-center gap-3">
             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             <span className="text-sm font-semibold text-slate-700">
-              Security Reasoning
+              Rule Analysis
             </span>
           </div>
         </div>
@@ -743,7 +756,7 @@ export function WhatHappensNext() {
     },
     {
       num: "03",
-      title: "Security reasoning",
+      title: "Rule analysis",
       desc: "Findings are evaluated against security rules.",
     },
     {

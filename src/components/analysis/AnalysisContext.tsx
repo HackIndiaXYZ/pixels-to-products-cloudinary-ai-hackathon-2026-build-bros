@@ -14,7 +14,7 @@ export type UploadState =
   | "CLASSIFYING"
   | "MODERATING"
   | "READY"
-  | "REASONING"
+  | "RULE_EVALUATION"
   | "DONE"
   | "AI_UNAVAILABLE"  // Upload + media analysis succeeded, but AI security analysis is unavailable
   | "ERROR";
@@ -57,7 +57,7 @@ interface AnalysisContextType {
   setContent: (c: string) => void;
   fileRef: React.RefObject<HTMLInputElement | null>;
   handleMediaUpload: (f: File) => Promise<void>;
-  handleSecurityReasoning: () => Promise<void>;
+  handleRuleAnalysis: () => Promise<void>;
   handleSubmitText: (e: React.FormEvent) => Promise<void>;
   resetAll: () => void;
 }
@@ -180,9 +180,9 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  async function handleSecurityReasoning() {
+  async function handleRuleAnalysis() {
     setSubmitting(true);
-    setUploadState("REASONING");
+    setUploadState("RULE_EVALUATION");
     setError(null);
     setPipelineError(null);
     try {
@@ -209,14 +209,14 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
           setPipelineError({
             stage: data.stage,
             code: data.code,
-            message: data.error || "Security reasoning failed",
+            message: data.error || "Rule analysis failed",
             retryable: data.retryable ?? false,
             uploadSucceeded: data.uploadSucceeded ?? false,
             evidenceId: data.evidenceId ?? null,
           });
-          setError(data.error || "Security reasoning failed");
+          setError(data.error || "Rule analysis failed");
         } else {
-          setError(data.error || "Security reasoning failed");
+          setError(data.error || "Rule analysis failed");
         }
 
         // If the upload succeeded but AI is unavailable, show a distinct state
@@ -236,7 +236,7 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (err) {
       setError(
-        err instanceof Error ? err.message : "Security reasoning failed"
+        err instanceof Error ? err.message : "Rule analysis failed"
       );
       setUploadState("READY");
     } finally {
@@ -286,7 +286,7 @@ export function AnalysisProvider({ children }: { children: React.ReactNode }) {
         setContent,
         fileRef,
         handleMediaUpload,
-        handleSecurityReasoning,
+        handleRuleAnalysis,
         handleSubmitText,
         resetAll,
       }}

@@ -89,8 +89,8 @@ export function SidebarHealthFooter({
           />
           <ServiceRow
             label="OpenAI"
-            status="optional"
-            customLabel="Optional"
+            status={openaiStatus === "operational" ? "operational" : "optional"}
+            customLabel={openaiStatus === "operational" ? "Available" : "Optional"}
           />
         </div>
       </div>
