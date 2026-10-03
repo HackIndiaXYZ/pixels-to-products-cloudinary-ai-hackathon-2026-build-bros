@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Image as ImageIcon, Sparkles, Crop, Layers, Zap, Search, Layout, Settings2, SlidersHorizontal, Maximize, RotateCw, FlipHorizontal, Eye, Database, Globe, Filter, Maximize2, Cpu, Shield, User, Code, Mail } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Image as ImageIcon, Sparkles, Crop, Layers, Zap, Search, Layout, Settings2, SlidersHorizontal, Maximize, RotateCw, FlipHorizontal, Eye, Database, Globe, Filter, Maximize2, Cpu, Shield, User, Code, Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { motion } from "framer-motion";
 
 const CAPABILITIES = [
   { icon: Sparkles, title: "AI Analysis", desc: "Understand uploaded media" },
@@ -130,15 +131,47 @@ export default function LandingPage() {
             <h1 className="text-5xl md:text-7xl font-editorial font-medium tracking-tight text-gray-900 leading-[0.95] mb-8">
               Turn raw media into<br />intelligent assets.
             </h1>
-            <p className="text-lg text-gray-600 mb-10 max-w-md leading-relaxed">
+            <p className="text-lg text-gray-600 mb-20 max-w-md leading-relaxed">
               Upload, analyze, transform, optimize and manage your media through one unified workspace.
             </p>
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 mb-12">
-              <Link href="/dashboard/workspace">
-                <Button size="lg" className="bg-gray-900 text-white hover:bg-gray-800 rounded-none h-14 px-8 text-sm">
-                  Open Media Workspace <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
+              <div className="relative inline-block">
+                {/* Handwritten annotation doodle */}
+                <div 
+                  className="absolute pointer-events-none z-10 max-sm:left-[20px] max-sm:-top-[70px] max-sm:scale-90 max-sm:origin-bottom-left"
+                  style={{ left: '40px', top: '-75px', transform: 'rotate(-2deg)', color: '#ef4444' }}
+                  aria-hidden="true"
+                >
+                  <span 
+                    className="absolute top-0 left-[5px] font-bold whitespace-nowrap bg-yellow-200/90 text-red-600 px-2 rounded-sm shadow-sm"
+                    style={{ fontFamily: '"Segoe Print", "Bradley Hand", "Comic Sans MS", cursive', fontSize: '17px', letterSpacing: '0.3px', transform: 'rotate(-4deg)' }}
+                  >
+                    click here
+                  </span>
+                  
+                  <svg
+                    className="absolute left-0 top-[18px] overflow-visible"
+                    style={{ width: '145px', height: '65px' }}
+                    viewBox="0 0 145 65"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      d="M 12 8 C 42 4, 72 10, 94 25 C 108 35, 116 45, 119 56"
+                      fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                    />
+                    <path
+                      d="M 109 48 L 119 56 L 122 43"
+                      fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                    />
+                  </svg>
+                </div>
+                
+                <Link href="/dashboard/workspace">
+                  <Button size="lg" className="bg-gray-900 text-white hover:bg-[#1f2937] rounded-none h-[58px] px-6 text-sm font-semibold group transition-all duration-180 hover:-translate-y-[2px] hover:shadow-[0_8px_20px_rgba(17,24,39,0.14)] w-[264px] max-sm:w-[250px]">
+                    Open Media Workspace <ArrowRight className="w-4 h-4 ml-2 transition-transform duration-180 group-hover:translate-x-1" />
+                  </Button>
+                </Link>
+              </div>
               <Link href="/dashboard/evidence">
                 <Button variant="secondary" size="lg" className="rounded-none h-14 px-8 text-sm border-gray-300 text-gray-700 hover:bg-gray-50">
                   Explore Media Library
@@ -320,7 +353,7 @@ export default function LandingPage() {
               <Cpu className="w-6 h-6 text-gray-300 mb-6" />
               <h3 className="font-ui text-lg font-semibold mb-3">AI Auto-Tagging</h3>
               <p className="text-gray-400 font-ui text-sm mb-6 leading-relaxed">
-                Automatically identify visual content and generate structured tags leveraging Cloudinary's AI categorization.
+                Automatically identify visual content and generate structured tags leveraging Cloudinary&apos;s AI categorization.
               </p>
               <div className="flex gap-2 flex-wrap mt-auto">
                 {["Person", "Laptop", "Workspace"].map(t => (
@@ -423,7 +456,7 @@ export default function LandingPage() {
               Everything you process,<br />organized in one place.
             </h2>
             <p className="text-gray-600 font-ui mb-8">
-              Processed assets are saved into the application's media library with their full metadata and AI tags attached.
+              Processed assets are saved into the application&apos;s media library with their full metadata and AI tags attached.
             </p>
             <Link href="/dashboard/evidence">
               <Button className="bg-gray-900 text-white hover:bg-gray-800 rounded-none">
@@ -509,59 +542,91 @@ export default function LandingPage() {
       <section className="px-8 py-16 border-b border-gray-200 bg-gray-50 text-center">
         <h2 className="font-technical text-sm tracking-widest text-gray-500 uppercase mb-4">Powered by Cloudinary</h2>
         <p className="text-gray-600 font-ui max-w-2xl mx-auto mb-6">
-          Leveraging Cloudinary's media storage, image transformations, AI-powered analysis, content-aware cropping, background extraction, and automatic delivery optimization.
+          Leveraging Cloudinary&apos;s media storage, image transformations, AI-powered analysis, content-aware cropping, background extraction, and automatic delivery optimization.
         </p>
       </section>
 
       {/* -- Team Section ------------------------------------------------------- */}
-      <section className="px-8 py-24 border-b border-gray-200 bg-gray-50">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-editorial font-medium text-gray-900 leading-tight mb-4">
+      <section className="relative px-8 py-32 border-b border-gray-200 bg-[#F8F9FB] overflow-hidden">
+        {/* Subtle background gradients */}
+        <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_30%,rgba(37,99,235,0.04),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(139,92,246,0.03),transparent_40%)]" />
+
+        <div className="max-w-7xl mx-auto relative z-10">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="text-center mb-20"
+          >
+            <h3 className="font-technical text-[11px] font-bold tracking-[0.2em] text-blue-600 uppercase mb-4">
+              BUILD BROS
+            </h3>
+            <h2 className="text-4xl md:text-5xl font-editorial font-medium text-gray-900 leading-tight mb-6">
               Meet the Team
             </h2>
-            <p className="text-gray-600 font-ui text-lg max-w-2xl mx-auto">
-              Built by Build Bros — a student engineering team focused on cybersecurity, cloud infrastructure, intelligent media processing, and product engineering.
+            <p className="text-gray-600 font-ui text-lg max-w-2xl mx-auto mb-8">
+              A student engineering team building SecureFlow AI at the intersection of cybersecurity, cloud infrastructure, intelligent media processing, and product engineering.
             </p>
-          </div>
+            <div className="inline-flex items-center gap-4 px-4 py-2 bg-white/60 backdrop-blur-sm rounded-full border border-gray-200/60 shadow-sm font-technical text-[10px] tracking-widest text-gray-500 uppercase">
+              <span>4 Engineers</span>
+              <span className="w-1 h-1 rounded-full bg-gray-300" />
+              <span>1 Product</span>
+              <span className="w-1 h-1 rounded-full bg-gray-300" />
+              <span>1 Shared Vision</span>
+            </div>
+          </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {TEAM_MEMBERS.map((member, i) => (
-              <div key={i} className="group bg-white border border-gray-200 p-8 flex flex-col items-center text-center transition-all duration-300 hover:shadow-card hover:-translate-y-1 relative">
-                <div className="absolute top-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ArrowRight className="w-4 h-4 text-gray-400 -rotate-45" />
-                </div>
-                
-                <div className="w-16 h-16 bg-gray-100 text-gray-900 flex items-center justify-center font-editorial text-xl font-medium mb-6 group-hover:bg-gray-900 group-hover:text-white transition-colors">
+              <motion.div 
+                key={i} 
+                initial={{ opacity: 0, y: 24, scale: 0.98 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.5, delay: 0.1 + i * 0.06 }}
+                className="group relative bg-white rounded-[20px] p-8 flex flex-col border border-[rgba(15,23,42,0.06)] shadow-[0_4px_20px_rgb(15,23,42,0.02)] hover:shadow-[0_12px_40px_rgba(37,99,235,0.08)] hover:-translate-y-2 hover:scale-[1.01] transition-all duration-300 h-full min-h-[440px]"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-gray-50 text-gray-900 flex items-center justify-center font-editorial text-xl font-medium mb-8 border border-gray-100 group-hover:scale-105 group-hover:-rotate-2 transition-transform duration-300">
                   {member.initials}
                 </div>
                 
-                <h3 className="font-ui font-semibold text-gray-900 mb-1">{member.name}</h3>
-                <p className="text-xs font-ui text-gray-500 mb-4 h-8">{member.roles}</p>
+                <h3 className="text-xl font-editorial font-bold text-gray-900 mb-2">{member.name}</h3>
                 
-                <div className="font-technical text-[10px] tracking-widest text-gray-400 uppercase mb-8">
+                <div className="flex flex-col gap-1 mb-6">
+                  {member.roles.split(" · ").map((role, idx) => (
+                    <span key={idx} className="text-sm font-ui text-gray-600">{role}</span>
+                  ))}
+                </div>
+                
+                <div className="font-technical text-[10px] font-bold tracking-widest text-gray-400 uppercase mb-8">
                   {member.degree}
                 </div>
                 
-                <div className="border-t border-gray-100 w-full pt-6 mt-auto">
-                  <div className="flex items-center justify-center gap-4">
-                    <a href={member.linkedin} target="_blank" rel="noreferrer" className="text-gray-400 hover:text-blue-700 transition-colors" title="LinkedIn">
-                      <User className="w-5 h-5" />
+                <div className="border-t border-gray-100/80 w-full pt-6 mt-auto flex flex-col gap-3">
+                  <a href={member.github} target="_blank" rel="noreferrer" className="flex items-center justify-between group/link text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors p-2 -mx-2 rounded-lg hover:bg-slate-50">
+                    GitHub <ArrowUpRight className="w-4 h-4 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-all" />
+                  </a>
+                  <a href={member.linkedin} target="_blank" rel="noreferrer" className="flex items-center justify-between group/link text-sm font-semibold text-gray-600 hover:text-blue-700 transition-colors p-2 -mx-2 rounded-lg hover:bg-blue-50/50">
+                    LinkedIn <ArrowUpRight className="w-4 h-4 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-all" />
+                  </a>
+                  {member.portfolio ? (
+                    <a href={member.portfolio} target="_blank" rel="noreferrer" className="flex items-center justify-between group/link text-sm font-semibold text-gray-600 hover:text-emerald-700 transition-colors p-2 -mx-2 rounded-lg hover:bg-emerald-50/50">
+                      Portfolio <ArrowUpRight className="w-4 h-4 opacity-50 group-hover/link:opacity-100 group-hover/link:translate-x-1 group-hover/link:-translate-y-1 transition-all" />
                     </a>
-                    <a href={member.github} target="_blank" rel="noreferrer" className="text-gray-400 hover:text-gray-900 transition-colors" title="GitHub">
-                      <Code className="w-5 h-5" />
-                    </a>
-                    {member.portfolio && (
-                      <a href={member.portfolio} target="_blank" rel="noreferrer" className="text-gray-400 hover:text-green-600 transition-colors" title="Portfolio">
-                        <Globe className="w-5 h-5" />
-                      </a>
-                    )}
-                    <a href={member.email} className="text-gray-400 hover:text-red-500 transition-colors" title="Email">
-                      <Mail className="w-5 h-5" />
-                    </a>
-                  </div>
+                  ) : (
+                    <div className="flex items-center justify-between text-sm font-semibold text-gray-400 p-2 -mx-2 cursor-default">
+                      Portfolio <span>—</span>
+                    </div>
+                  )}
                 </div>
-              </div>
+                
+                <div className="mt-4">
+                  <a href={member.email} className="inline-flex items-center gap-2 text-sm font-semibold text-gray-500 hover:text-gray-900 transition-colors py-2 group/mail">
+                    <Mail className="w-4 h-4 group-hover/mail:text-blue-500 transition-colors" /> Contact
+                  </a>
+                </div>
+              </motion.div>
             ))}
           </div>
         </div>

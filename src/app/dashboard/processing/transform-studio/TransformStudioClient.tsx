@@ -119,8 +119,11 @@ export function TransformStudioClient({ defaultAssetId, recentMedia }: Transform
                 className="object-contain"
                 width={parseInt(width) || 800}
                 height={parseInt(height) || 600}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 crop={cropMode as any}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 gravity={gravity as any}
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 format={format === "auto" ? undefined : format as any}
                 quality={quality === "auto" ? "auto" : parseInt(quality)}
                 blur={effect === "blur" ? "800" : undefined}

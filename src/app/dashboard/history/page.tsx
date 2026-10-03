@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient as createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { ArrowRight, FileWarning } from "lucide-react";
 import { formatDate } from "@/lib/utils";

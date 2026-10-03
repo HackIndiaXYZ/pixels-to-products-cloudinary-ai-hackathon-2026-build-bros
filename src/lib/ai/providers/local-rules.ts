@@ -3,7 +3,8 @@ import { SecurityAnalysisResult } from "../schemas";
 
 export function runLocalRulesProvider(payload: EnginePayload): SecurityAnalysisResult {
   const { resourceType, cloudinaryIntelligence } = payload;
-  const metadata = (cloudinaryIntelligence.metadata as Record<string, string>) || {};
+  const cldIntel = cloudinaryIntelligence || {};
+  const metadata = (cldIntel.metadata as Record<string, string>) || {};
   const format = metadata.format || "unknown";
   
   const observations = [
@@ -30,7 +31,7 @@ export function runLocalRulesProvider(payload: EnginePayload): SecurityAnalysisR
     });
   }
   
-  const diagnostics = (cloudinaryIntelligence.diagnostics as Record<string, string>) || {};
+  const diagnostics = (cldIntel.diagnostics as Record<string, string>) || {};
   if (diagnostics.vision === "ADDON_REQUIRED") {
     observations.push({
       id: "obs-loc-4",

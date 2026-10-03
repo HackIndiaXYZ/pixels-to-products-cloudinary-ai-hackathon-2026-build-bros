@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { SidebarNavigation } from "@/components/ui/sidebar-navigation";
 import { SidebarHealthFooter } from "@/components/ui/sidebar-health-footer";
+import type { ServiceStatus } from "@/components/ui/sidebar-health-footer";
 import { CreatorEasterEgg } from "@/components/ui/creator-easter-egg";
 import { TopCommandBar } from "./TopCommandBar";
 import { CommandPalette } from "@/components/ui/command-palette";
@@ -16,6 +17,7 @@ interface AppShellProps {
     cloudinary: boolean;
     openai: boolean;
     supabase: boolean;
+    openaiStatus?: ServiceStatus;
   };
 }
 
@@ -45,6 +47,7 @@ export function AppShell({ children, counts, config }: AppShellProps) {
           cloudinary={config.cloudinary}
           openai={config.openai}
           supabase={config.supabase}
+          openaiStatus={config.openaiStatus}
         />
       </aside>
 

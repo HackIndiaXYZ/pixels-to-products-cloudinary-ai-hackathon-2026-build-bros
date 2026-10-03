@@ -122,6 +122,19 @@ function PanelSection({ title, children }: { title: string; children: React.Reac
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
+const DockItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
+  <button 
+    onClick={onClick}
+    className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
+      active 
+        ? "bg-slate-800 text-white shadow-md" 
+        : "bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+    }`}
+  >
+    {icon} {label}
+  </button>
+);
+
 export function MediaWorkspaceStudio({
   cloudName,
   initialTool,
@@ -236,7 +249,7 @@ export function MediaWorkspaceStudio({
       });
       const d = await r.json();
       if (d.success && Array.isArray(d.tags)) {
-        tags = d.tags.slice(0, 8).map((t: string, i: number) => ({ tag: t, confidence: Math.round(94 - i * 4) }));
+        tags = d.tags.slice(0, 8).map((t: string) => ({ tag: t, confidence: 100 }));
       }
       update(1, "done");
     } catch { update(1, "error"); }
@@ -345,24 +358,18 @@ export function MediaWorkspaceStudio({
     { num: "04", title: "Export", desc: "Save & share", status: stage === "output" ? "current" : intel ? "pending" : "locked" },
   ];
 
-  const DockItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
-    <button 
-      onClick={onClick}
-      className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
-        active 
-          ? "bg-slate-800 text-white shadow-md" 
-          : "bg-white text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-      }`}
-    >
-      {icon} {label}
-    </button>
-  );
+
 
   return (
     <div 
       className="flex flex-col h-[calc(100vh-64px)] min-h-[700px] bg-[#F7F8FA] rounded-2xl border border-[rgba(15,23,42,0.08)] shadow-[0_8px_30px_rgb(0,0,0,0.04)] overflow-hidden"
+      onDragEnter={(e) => { e.preventDefault(); setIsDragging(true); }}
       onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-      onDragLeave={() => setIsDragging(false)}
+      onDragLeave={(e) => { 
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+           setIsDragging(false);
+        }
+      }}
       onDrop={(e) => { 
         e.preventDefault(); setIsDragging(false); 
         if (stage === "upload" && !pendingFile) {
@@ -450,33 +457,40 @@ export function MediaWorkspaceStudio({
                
                {/* ── STAGE: UPLOAD ── */}
                {stage === "upload" && (
-                 <motion.div initial={{opacity:0, scale:0.98}} animate={{opacity:1, scale:1}} className="w-[65%] max-w-lg aspect-[4/3] rounded-3xl border border-[rgba(15,23,42,0.08)] bg-white shadow-[0_20px_40px_rgb(0,0,0,0.02)] flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-[0_20px_40px_rgb(0,0,0,0.04)] transition-shadow">
+                 <motion.div 
+                    initial={{opacity:0, scale:0.98}} 
+                    animate={{opacity:1, scale:1}} 
+                    className="w-[65%] max-w-lg aspect-[4/3] rounded-3xl border border-[rgba(15,23,42,0.08)] bg-white shadow-[0_20px_40px_rgb(0,0,0,0.02)] flex flex-col items-center justify-center relative overflow-hidden group hover:shadow-[0_20px_40px_rgb(0,0,0,0.04)] transition-shadow"
+                 >
                     {!pendingFile ? (
-                      <>
+                      <div 
+                        className="absolute inset-0 flex flex-col items-center justify-center cursor-pointer" 
+                        onClick={() => fileInputRef.current?.click()}
+                      >
                         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-blue-50/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
-                        <input ref={fileInputRef} type="file" accept="image/*,video/mp4,video/webm,video/quicktime" className="hidden" onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
+                        <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp,image/gif,image/avif,video/mp4,video/webm,video/quicktime" className="hidden" onChange={(e) => e.target.files?.[0] && handleFile(e.target.files[0])} />
                         <div className="w-16 h-16 bg-slate-50 rounded-2xl flex items-center justify-center mb-5 group-hover:scale-110 group-hover:bg-blue-50 transition-all duration-300">
                            <Upload className="w-7 h-7 text-slate-400 group-hover:text-blue-500 transition-colors" />
                         </div>
                         <p className="text-sm font-bold text-slate-800">Drop media here</p>
-                        <p className="text-xs text-slate-500 mt-1">or <button onClick={() => fileInputRef.current?.click()} className="text-blue-600 font-semibold hover:underline">browse from device</button></p>
+                        <p className="text-xs text-slate-500 mt-1">or <span className="text-blue-600 font-semibold hover:underline">browse from device</span></p>
                         <p className="text-[10px] font-medium text-slate-400 mt-8 px-4 py-1.5 bg-slate-50 rounded-full">JPEG · PNG · WEBP · MP4 · Max 10 MB</p>
-                      </>
+                      </div>
                     ) : (
-                      <div className="w-full h-full flex flex-col relative">
+                      <div className="w-full h-full flex flex-col relative min-h-0">
                         {previewUrl && (
-                          <div className="flex-1 relative p-4 flex items-center justify-center bg-slate-50/50">
+                          <div className="flex-1 relative p-4 flex items-center justify-center bg-slate-50/50 min-h-0 overflow-hidden">
                              {/* eslint-disable-next-line @next/next/no-img-element */}
                              <img src={previewUrl} alt="Preview" className="max-w-full max-h-full object-contain drop-shadow-md rounded-lg" />
                           </div>
                         )}
-                        <div className="p-4 border-t border-[rgba(15,23,42,0.08)] bg-white flex items-center justify-between shrink-0">
-                           <div>
-                             <p className="text-xs font-bold text-slate-800 truncate max-w-[200px]">{pendingFile.name}</p>
+                        <div className="p-4 border-t border-[rgba(15,23,42,0.08)] bg-white flex items-center justify-between shrink-0 z-10 relative">
+                           <div className="min-w-0 flex-1 mr-4">
+                             <p className="text-xs font-bold text-slate-800 truncate">{pendingFile.name}</p>
                              <p className="text-[10px] text-slate-500 mt-0.5">{fmt(pendingFile.size)}</p>
                            </div>
-                           <div className="flex gap-2">
-                              <button onClick={() => setPendingFile(null)} className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors">Cancel</button>
+                           <div className="flex gap-2 shrink-0">
+                              <button onClick={() => setPendingFile(null)} disabled={uploadProgress !== null} className="px-4 py-2 text-xs font-bold text-slate-500 hover:text-slate-800 transition-colors disabled:opacity-50">Cancel</button>
                               <button onClick={uploadFile} disabled={uploadProgress !== null} className="px-5 py-2 bg-slate-900 text-white rounded-xl text-xs font-bold hover:bg-slate-800 transition-colors shadow-md flex items-center gap-2 disabled:opacity-50">
                                 {uploadProgress !== null ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
                                 Upload
@@ -543,6 +557,7 @@ export function MediaWorkspaceStudio({
                                    <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-3">AI Gravity</p>
                                    <div className="flex gap-2">
                                      {["auto","faces","object"].map(g => (
+                                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                        <button key={g} onClick={() => setT("gravity", g as any)} className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg border transition-colors ${transform.gravity === g ? "bg-blue-600 text-white border-blue-600" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{g.toUpperCase()}</button>
                                      ))}
                                    </div>
@@ -559,6 +574,7 @@ export function MediaWorkspaceStudio({
                                    <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-3">Crop Mode</p>
                                    <div className="flex gap-2">
                                      {["fill","thumb","fit"].map(m => (
+                                       // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                        <button key={m} onClick={() => setT("cropMode", m as any)} className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg border transition-colors ${transform.cropMode === m ? "bg-slate-800 text-white border-slate-800" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{m.toUpperCase()}</button>
                                      ))}
                                    </div>
@@ -597,6 +613,7 @@ export function MediaWorkspaceStudio({
                                  <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-3">Format</p>
                                  <div className="flex gap-2">
                                    {["auto","webp","avif","jpg"].map(f => (
+                                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                      <button key={f} onClick={() => setT("format", f as any)} className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg border transition-colors ${transform.format === f ? "bg-emerald-600 text-white border-emerald-600" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{f.toUpperCase()}</button>
                                    ))}
                                  </div>
@@ -605,6 +622,7 @@ export function MediaWorkspaceStudio({
                                  <p className="text-[9px] font-bold uppercase tracking-widest text-slate-400 mb-3">Quality</p>
                                  <div className="flex gap-2">
                                    {["auto","60","80"].map(q => (
+                                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                      <button key={q} onClick={() => setT("quality", q as any)} className={`flex-1 py-1.5 text-[10px] font-bold rounded-lg border transition-colors ${transform.quality === q ? "bg-emerald-600 text-white border-emerald-600" : "bg-white border-slate-200 text-slate-600 hover:bg-slate-50"}`}>{q === "auto" ? "AUTO" : q}</button>
                                    ))}
                                  </div>
@@ -625,6 +643,7 @@ export function MediaWorkspaceStudio({
                                <div className="flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-2">
                                   <span className="text-[9px] font-bold text-slate-400">Rotate</span>
                                   {[0,90,180,270].map(r => (
+                                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
                                      <button key={r} onClick={() => setT("rotate", r as any)} className={`flex-1 py-1 text-[9px] font-bold rounded ${transform.rotate === r ? "bg-white shadow-sm text-slate-800" : "text-slate-400 hover:text-slate-700"}`}>{r}°</button>
                                   ))}
                                </div>

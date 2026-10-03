@@ -1,5 +1,4 @@
-import { PageContainer } from "@/components/layout/PageContainer";
-import { PageHeader } from "@/components/layout/PageHeader";
+import { ConfigurationClient } from "@/components/configuration/ConfigurationClient";
 
 export const metadata = { title: "Configuration - SecureFlow AI" };
 
@@ -9,86 +8,12 @@ export default function ConfigurationPage() {
   const isSupabaseConfigured = !!process.env.NEXT_PUBLIC_SUPABASE_URL;
   const isOpenAIConfigured = !!process.env.OPENAI_API_KEY;
 
-  const ConfigSection = ({ title, children }: { title: string, children: React.ReactNode }) => (
-    <div className="mb-12">
-      <p className="eyebrow mb-2">{title}</p>
-      <hr className="rule-strong mb-6" />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-4 font-technical text-sm tracking-widest uppercase text-[--color-ink]">
-        {children}
-      </div>
-    </div>
-  );
-
-  const ConfigItem = ({ label, status, type = "configured" }: { label: string, status: string, type?: "configured" | "unconfigured" | "enabled" }) => {
-    let colorClass = "text-[--color-ink]";
-    let icon = "●";
-    
-    if (type === "unconfigured") {
-      colorClass = "text-[--color-ink-4]";
-      icon = "○";
-    } else if (type === "enabled") {
-      icon = "✓";
-    }
-
-    return (
-      <div className="flex justify-between items-center border-b border-[--color-rule-light] pb-3">
-        <span className="text-[--color-ink-3]">{label}</span>
-        <div className={`flex items-center gap-2 ${colorClass}`}>
-          <span>{icon}</span>
-          <span>{status}</span>
-        </div>
-      </div>
-    );
+  const config = {
+    cloudinary: isCloudinaryConfigured,
+    cloudinaryUploadPreset: isCloudinaryUploadPreset,
+    supabase: isSupabaseConfigured,
+    openai: isOpenAIConfigured,
   };
 
-  return (
-    <PageContainer>
-      <PageHeader 
-        category="SYSTEM"
-        title="System Configuration"
-        description="Provider settings, integrations, and environment controls."
-        secondaryActions={
-          <div className="flex flex-col items-end gap-1">
-            <div className="font-ui text-[10px] font-semibold tracking-wider text-gray-500 uppercase">
-              ENVIRONMENT
-            </div>
-            <div className="font-editorial text-sm font-medium text-gray-900">
-              PRODUCTION ENV
-            </div>
-          </div>
-        }
-      />
-
-      <div className="bg-white/70 backdrop-blur-sm border border-gray-200/60 rounded-[20px] shadow-[0_2px_8px_rgba(15,23,42,0.02)] p-8 lg:p-10 mb-6">
-        <ConfigSection title="CLOUDINARY">
-          <ConfigItem label="Cloud Name" status={isCloudinaryConfigured ? "CONFIGURED" : "MISSING"} type={isCloudinaryConfigured ? "configured" : "unconfigured"} />
-          <ConfigItem label="Upload Preset" status={isCloudinaryUploadPreset ? "CONFIGURED" : "MISSING"} type={isCloudinaryUploadPreset ? "configured" : "unconfigured"} />
-          <ConfigItem label="API Connection" status={isCloudinaryConfigured ? "HEALTHY" : "OFFLINE"} type={isCloudinaryConfigured ? "configured" : "unconfigured"} />
-          <ConfigItem label="Delivery" status={isCloudinaryConfigured ? "HEALTHY" : "OFFLINE"} type={isCloudinaryConfigured ? "configured" : "unconfigured"} />
-        </ConfigSection>
-
-        <ConfigSection title="SUPABASE">
-          <ConfigItem label="Database" status={isSupabaseConfigured ? "CONNECTED" : "OFFLINE"} type={isSupabaseConfigured ? "configured" : "unconfigured"} />
-          <ConfigItem label="Persistence" status={isSupabaseConfigured ? "HEALTHY" : "OFFLINE"} type={isSupabaseConfigured ? "configured" : "unconfigured"} />
-          <ConfigItem label="RLS" status="DEMO MODE" />
-        </ConfigSection>
-
-        <ConfigSection title="SECURITY ENGINE">
-          <ConfigItem label="OpenAI" status={isOpenAIConfigured ? "CONFIGURED" : "NOT CONFIGURED"} type={isOpenAIConfigured ? "configured" : "unconfigured"} />
-          <ConfigItem label="Cloudinary AI" status={isCloudinaryConfigured ? "AVAILABLE" : "UNAVAILABLE"} />
-          <ConfigItem label="Local Rules" status="ACTIVE" />
-        </ConfigSection>
-
-        <ConfigSection title="MEDIA DELIVERY">
-          <ConfigItem label="Auto Format" status="f_auto" type="enabled" />
-          <ConfigItem label="Auto Quality" status="q_auto" type="enabled" />
-          <ConfigItem label="CDN Delivery" status="ENABLED" type="enabled" />
-        </ConfigSection>
-      </div>
-      
-      <p className="font-ui text-[10px] text-gray-400 uppercase tracking-wider text-center font-semibold">
-        Note: Environment secrets and keys are explicitly excluded from this dashboard for security.
-      </p>
-    </PageContainer>
-  );
+  return <ConfigurationClient config={config} />;
 }

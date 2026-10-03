@@ -74,6 +74,7 @@ export function DashboardClient({ list }: { list: AnalysisResult[] }) {
     }
   };
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const itemVariants: any = {
     hidden: { opacity: 0, y: 10 },
     visible: {

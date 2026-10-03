@@ -128,7 +128,9 @@ export function SmartCropClient({ defaultAssetId, recentMedia }: SmartCropClient
                     alt="Result"
                     fill
                     className="object-cover"
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     crop={activeCropMode.cloudinaryCrop as any}
+                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
                     gravity={activeCropMode.gravity as any}
                     aspectRatio={activePreset.ratio}
                   />

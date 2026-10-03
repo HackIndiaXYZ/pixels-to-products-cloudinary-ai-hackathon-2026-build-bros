@@ -1,0 +1,357 @@
+
+> secureflow-ai@0.1.0 lint
+> eslint
+
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\patch.js
+  1:12  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+  2:14  error  A `require()` style import is forbidden  @typescript-eslint/no-require-imports
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\api\analyze\route.ts
+  2:10  warning  'createClient' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\api\media\save\route.ts
+  7:20  warning  'intel' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  7:27  warning  'transform' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\api\security\analyze\route.ts
+  2:29  warning  'OpenAIUnavailableError' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\DashboardClient.tsx
+   13:3   warning  'BarChart3' is defined but never used                  @typescript-eslint/no-unused-vars
+   15:3   warning  'Crop' is defined but never used                       @typescript-eslint/no-unused-vars
+   16:3   warning  'Layers' is defined but never used                     @typescript-eslint/no-unused-vars
+   17:3   warning  'Zap' is defined but never used                        @typescript-eslint/no-unused-vars
+   18:3   warning  'Layout' is defined but never used                     @typescript-eslint/no-unused-vars
+   19:3   warning  'Search' is defined but never used                     @typescript-eslint/no-unused-vars
+   20:3   warning  'Eye' is defined but never used                        @typescript-eslint/no-unused-vars
+   21:3   warning  'Settings2' is defined but never used                  @typescript-eslint/no-unused-vars
+   56:9   warning  'resolvedFindings' is assigned a value but never used  @typescript-eslint/no-unused-vars
+   77:23  error    Unexpected any. Specify a different type               @typescript-eslint/no-explicit-any
+  227:44  warning  'i' is defined but never used                          @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\analysis\[id]\page.tsx
+  4:10  warning  'ArrowLeft' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\evidence\EvidenceList.tsx
+  13:15  warning  'isSafe' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\evidence\[id]\page.tsx
+   3:8  warning  'Link' is defined but never used                      @typescript-eslint/no-unused-vars
+  36:9  warning  'observations' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  37:9  warning  'risks' is assigned a value but never used            @typescript-eslint/no-unused-vars
+  38:9  warning  'recommendations' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  41:9  warning  'timeUpload' is assigned a value but never used       @typescript-eslint/no-unused-vars
+  42:9  warning  'timeIntel' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  43:9  warning  'timeClass' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  44:9  warning  'timeMod' is assigned a value but never used          @typescript-eslint/no-unused-vars
+  45:9  warning  'timeReason' is assigned a value but never used       @typescript-eslint/no-unused-vars
+  46:9  warning  'timePersist' is assigned a value but never used      @typescript-eslint/no-unused-vars
+  48:9  warning  'isLocalEngine' is assigned a value but never used    @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\findings\page.tsx
+   2:8  warning  'Link' is defined but never used                        @typescript-eslint/no-unused-vars
+  51:7  error    'allFindings' is never reassigned. Use 'const' instead  prefer-const
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\processing\background-removal\BgRemovalClient.tsx
+   6:51  warning  'ExternalLink' is defined but never used          @typescript-eslint/no-unused-vars
+  19:3   warning  'cloudinaryConfigured' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\processing\optimization\OptimizationClient.tsx
+  6:10  warning  'Zap' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\processing\smart-crop\SmartCropClient.tsx
+    7:3   warning  'Crop' is defined but never used          @typescript-eslint/no-unused-vars
+    9:3   warning  'ArrowRight' is defined but never used    @typescript-eslint/no-unused-vars
+   10:3   warning  'ImageIcon' is defined but never used     @typescript-eslint/no-unused-vars
+  131:60  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+  132:56  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\processing\transform-studio\TransformStudioClient.tsx
+    6:10  warning  'Wand2' is defined but never used                @typescript-eslint/no-unused-vars
+   31:10  warning  'lockAspect' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  122:35  error    Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  123:37  error    Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+  124:67  error    Unexpected any. Specify a different type         @typescript-eslint/no-explicit-any
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\reports\page.tsx
+  2:8  warning  'Link' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\search\page.tsx
+  2:20  warning  'SearchIcon' is defined but never used     @typescript-eslint/no-unused-vars
+  2:32  warning  'Filter' is defined but never used         @typescript-eslint/no-unused-vars
+  2:40  warning  'FileWarning' is defined but never used    @typescript-eslint/no-unused-vars
+  3:8   warning  'Link' is defined but never used           @typescript-eslint/no-unused-vars
+  4:10  warning  'EvidenceList' is defined but never used   @typescript-eslint/no-unused-vars
+  5:10  warning  'PageContainer' is defined but never used  @typescript-eslint/no-unused-vars
+  6:10  warning  'PageHeader' is defined but never used     @typescript-eslint/no-unused-vars
+  7:10  warning  'EmptyState' is defined but never used     @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx
+    7:10  warning  'RotateCcw' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+    7:37  warning  'FlipVertical' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+    8:30  warning  'AlertCircle' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    @typescript-eslint/no-unused-vars
+    9:13  warning  'Eye' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+   10:27  warning  'Settings' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       @typescript-eslint/no-unused-vars
+   10:37  warning  'ChevronRight' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+   11:3   warning  'ImageIcon' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+   11:14  warning  'CheckCircle2' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+   82:7   warning  'STAGES' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                @typescript-eslint/no-unused-vars
+   99:10  warning  'OptionBtn' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      @typescript-eslint/no-unused-vars
+  114:10  warning  'PanelSection' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-unused-vars
+  128:3   warning  'cloudinaryConfigured' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+  142:10  warning  'uploadError' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           @typescript-eslint/no-unused-vars
+  149:10  warning  'intelSteps' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            @typescript-eslint/no-unused-vars
+  160:9   warning  'resetTransform' is assigned a value but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        @typescript-eslint/no-unused-vars
+  408:31  warning  'i' is defined but never used                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              @typescript-eslint/no-unused-vars
+  558:92  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  574:93  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  612:89  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  620:90  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  640:89  error    Unexpected any. Specify a different type                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   @typescript-eslint/no-explicit-any
+  737:21  error    Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx:737:21
+  735 |              {asset && stage !== "upload" && stage !== "output" && (
+  736 |                 <motion.div initial={{y:100}} animate={{y:0}} exit={{y:100}} className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl border border-[rgba(15,23,42,0.08)] shadow-[0_20px_40px_rgb(0,0,0,0.08)] rounded-2xl flex items-center justify-center p-2 gap-1 z-20">
+> 737 |                    <DockItem icon={<Crop className="w-4 h-4" />} label="Smart Crop" active={stage === "smart-crop"} onClick={() => setStage("smart-crop")} />
+      |                     ^^^^^^^^ This component is created during render
+  738 |                    <DockItem icon={<Layers className="w-4 h-4" />} label="Remove BG" active={stage === "bg-removal"} onClick={() => setStage("bg-removal")} />
+  739 |                    <DockItem icon={<Zap className="w-4 h-4" />} label="Optimize" active={stage === "optimize"} onClick={() => setStage("optimize")} />
+  740 |                    <DockItem icon={<Wand2 className="w-4 h-4" />} label="Transform" active={stage === "transform"} onClick={() => setStage("transform")} />
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx:348:20
+  346 |   ];
+  347 |
+> 348 |   const DockItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
+      |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 349 |     <button 
+      | ^^^^^^^^^^^^
+> 350 |       onClick={onClick}
+      …
+      | ^^^^^^^^^^^^
+> 358 |     </button>
+      | ^^^^^^^^^^^^
+> 359 |   );
+      | ^^^^ The component is created during render here
+  360 |
+  361 |   return (
+  362 |     <div    react-hooks/static-components
+  738:21  error    Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx:738:21
+  736 |                 <motion.div initial={{y:100}} animate={{y:0}} exit={{y:100}} className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-white/90 backdrop-blur-xl border border-[rgba(15,23,42,0.08)] shadow-[0_20px_40px_rgb(0,0,0,0.08)] rounded-2xl flex items-center justify-center p-2 gap-1 z-20">
+  737 |                    <DockItem icon={<Crop className="w-4 h-4" />} label="Smart Crop" active={stage === "smart-crop"} onClick={() => setStage("smart-crop")} />
+> 738 |                    <DockItem icon={<Layers className="w-4 h-4" />} label="Remove BG" active={stage === "bg-removal"} onClick={() => setStage("bg-removal")} />
+      |                     ^^^^^^^^ This component is created during render
+  739 |                    <DockItem icon={<Zap className="w-4 h-4" />} label="Optimize" active={stage === "optimize"} onClick={() => setStage("optimize")} />
+  740 |                    <DockItem icon={<Wand2 className="w-4 h-4" />} label="Transform" active={stage === "transform"} onClick={() => setStage("transform")} />
+  741 |                    <div className="w-px h-6 bg-slate-200 mx-2"></div>
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx:348:20
+  346 |   ];
+  347 |
+> 348 |   const DockItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
+      |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 349 |     <button 
+      | ^^^^^^^^^^^^
+> 350 |       onClick={onClick}
+      …
+      | ^^^^^^^^^^^^
+> 358 |     </button>
+      | ^^^^^^^^^^^^
+> 359 |   );
+      | ^^^^ The component is created during render here
+  360 |
+  361 |   return (
+  362 |     <div   react-hooks/static-components
+  739:21  error    Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx:739:21
+  737 |                    <DockItem icon={<Crop className="w-4 h-4" />} label="Smart Crop" active={stage === "smart-crop"} onClick={() => setStage("smart-crop")} />
+  738 |                    <DockItem icon={<Layers className="w-4 h-4" />} label="Remove BG" active={stage === "bg-removal"} onClick={() => setStage("bg-removal")} />
+> 739 |                    <DockItem icon={<Zap className="w-4 h-4" />} label="Optimize" active={stage === "optimize"} onClick={() => setStage("optimize")} />
+      |                     ^^^^^^^^ This component is created during render
+  740 |                    <DockItem icon={<Wand2 className="w-4 h-4" />} label="Transform" active={stage === "transform"} onClick={() => setStage("transform")} />
+  741 |                    <div className="w-px h-6 bg-slate-200 mx-2"></div>
+  742 |                    <DockItem icon={<Save className="w-4 h-4" />} label="Export" active={false} onClick={() => setStage("output")} />
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx:348:20
+  346 |   ];
+  347 |
+> 348 |   const DockItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
+      |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 349 |     <button 
+      | ^^^^^^^^^^^^
+> 350 |       onClick={onClick}
+      …
+      | ^^^^^^^^^^^^
+> 358 |     </button>
+      | ^^^^^^^^^^^^
+> 359 |   );
+      | ^^^^ The component is created during render here
+  360 |
+  361 |   return (
+  362 |     <div                                                                                                                                                                      react-hooks/static-components
+  740:21  error    Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx:740:21
+  738 |                    <DockItem icon={<Layers className="w-4 h-4" />} label="Remove BG" active={stage === "bg-removal"} onClick={() => setStage("bg-removal")} />
+  739 |                    <DockItem icon={<Zap className="w-4 h-4" />} label="Optimize" active={stage === "optimize"} onClick={() => setStage("optimize")} />
+> 740 |                    <DockItem icon={<Wand2 className="w-4 h-4" />} label="Transform" active={stage === "transform"} onClick={() => setStage("transform")} />
+      |                     ^^^^^^^^ This component is created during render
+  741 |                    <div className="w-px h-6 bg-slate-200 mx-2"></div>
+  742 |                    <DockItem icon={<Save className="w-4 h-4" />} label="Export" active={false} onClick={() => setStage("output")} />
+  743 |                 </motion.div>
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx:348:20
+  346 |   ];
+  347 |
+> 348 |   const DockItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
+      |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 349 |     <button 
+      | ^^^^^^^^^^^^
+> 350 |       onClick={onClick}
+      …
+      | ^^^^^^^^^^^^
+> 358 |     </button>
+      | ^^^^^^^^^^^^
+> 359 |   );
+      | ^^^^ The component is created during render here
+  360 |
+  361 |   return (
+  362 |     <div                                                                                                                                                                                                                                                                                                      react-hooks/static-components
+  742:21  error    Error: Cannot create components during render
+
+Components created during render will reset their state each time they are created. Declare components outside of render.
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx:742:21
+  740 |                    <DockItem icon={<Wand2 className="w-4 h-4" />} label="Transform" active={stage === "transform"} onClick={() => setStage("transform")} />
+  741 |                    <div className="w-px h-6 bg-slate-200 mx-2"></div>
+> 742 |                    <DockItem icon={<Save className="w-4 h-4" />} label="Export" active={false} onClick={() => setStage("output")} />
+      |                     ^^^^^^^^ This component is created during render
+  743 |                 </motion.div>
+  744 |              )}
+  745 |            </AnimatePresence>
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\MediaWorkspace.tsx:348:20
+  346 |   ];
+  347 |
+> 348 |   const DockItem = ({ icon, label, active, onClick }: { icon: React.ReactNode, label: string, active: boolean, onClick: () => void }) => (
+      |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+> 349 |     <button 
+      | ^^^^^^^^^^^^
+> 350 |       onClick={onClick}
+      …
+      | ^^^^^^^^^^^^
+> 358 |     </button>
+      | ^^^^^^^^^^^^
+> 359 |   );
+      | ^^^^ The component is created during render here
+  360 |
+  361 |   return (
+  362 |     <div                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              react-hooks/static-components
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\dashboard\workspace\page.tsx
+   2:10  warning  'Sparkles' is defined but never used      @typescript-eslint/no-unused-vars
+  25:34  error    Unexpected any. Specify a different type  @typescript-eslint/no-explicit-any
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\app\page.tsx
+    4:131  warning  'Maximize' is defined but never used                             @typescript-eslint/no-unused-vars
+    4:182  warning  'Globe' is defined but never used                                @typescript-eslint/no-unused-vars
+    4:221  warning  'User' is defined but never used                                 @typescript-eslint/no-unused-vars
+    4:227  warning  'Code' is defined but never used                                 @typescript-eslint/no-unused-vars
+    6:20   warning  'useEffect' is defined but never used                            @typescript-eslint/no-unused-vars
+  356:105  error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  459:62   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+  545:32   error    `'` can be escaped with `&apos;`, `&lsquo;`, `&#39;`, `&rsquo;`  react/no-unescaped-entities
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\analysis\AnalysisComponents.tsx
+  6:3  warning  'Upload' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\analysis\AnalysisForm.tsx
+    5:58  warning  'FileTextIcon' is defined but never used         @typescript-eslint/no-unused-vars
+  357:27  warning  'statusDesc' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\configuration\ConfigurationClient.tsx
+  5:10   warning  'Settings' is defined but never used     @typescript-eslint/no-unused-vars
+  5:43   warning  'Activity' is defined but never used     @typescript-eslint/no-unused-vars
+  5:53   warning  'Cloud' is defined but never used        @typescript-eslint/no-unused-vars
+  5:60   warning  'Database' is defined but never used     @typescript-eslint/no-unused-vars
+  5:70   warning  'Lock' is defined but never used         @typescript-eslint/no-unused-vars
+  5:76   warning  'Play' is defined but never used         @typescript-eslint/no-unused-vars
+  5:102  warning  'AlertCircle' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\evidence\EvidenceLibraryClient.tsx
+  6:20  warning  'ImageIcon' is defined but never used      @typescript-eslint/no-unused-vars
+  7:23  warning  'PlayCircle' is defined but never used     @typescript-eslint/no-unused-vars
+  8:8   warning  'Command' is defined but never used        @typescript-eslint/no-unused-vars
+  8:17  warning  'FolderArchive' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\findings\FindingsClient.tsx
+   5:30  warning  'FileWarning' is defined but never used      @typescript-eslint/no-unused-vars
+   5:43  warning  'ShieldAlert' is defined but never used      @typescript-eslint/no-unused-vars
+  11:9   warning  'router' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\pipeline\PipelineClient.tsx
+    5:16   warning  'Settings' is defined but never used         @typescript-eslint/no-unused-vars
+    5:26   warning  'RefreshCw' is defined but never used        @typescript-eslint/no-unused-vars
+    5:73   warning  'Clock' is defined but never used            @typescript-eslint/no-unused-vars
+    5:103  warning  'ChevronRight' is defined but never used     @typescript-eslint/no-unused-vars
+    5:117  warning  'FileText' is defined but never used         @typescript-eslint/no-unused-vars
+    6:8    warning  'Link' is defined but never used             @typescript-eslint/no-unused-vars
+   22:43   warning  'config' is defined but never used           @typescript-eslint/no-unused-vars
+   23:9    warning  'router' is assigned a value but never used  @typescript-eslint/no-unused-vars
+  334:76   warning  'i' is defined but never used                @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\reports\ReportsClient.tsx
+   4:18   warning  'AnimatePresence' is defined but never used        @typescript-eslint/no-unused-vars
+   5:117  warning  'Circle' is defined but never used                 @typescript-eslint/no-unused-vars
+  11:9    warning  'router' is assigned a value but never used        @typescript-eslint/no-unused-vars
+  22:9    warning  'avgRiskScore' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\search\SearchClient.tsx
+   3:20  warning  'useEffect' is defined but never used                  @typescript-eslint/no-unused-vars
+   5:20  warning  'SearchIcon' is defined but never used                 @typescript-eslint/no-unused-vars
+   5:40  warning  'FileWarning' is defined but never used                @typescript-eslint/no-unused-vars
+   6:8   warning  'Link' is defined but never used                       @typescript-eslint/no-unused-vars
+   8:21  warning  'useSearchParams' is defined but never used            @typescript-eslint/no-unused-vars
+  17:10  warning  'activeFilters' is assigned a value but never used     @typescript-eslint/no-unused-vars
+  17:25  warning  'setActiveFilters' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\status\StatusClient.tsx
+    5:54  warning  'Cpu' is defined but never used                                                                                   @typescript-eslint/no-unused-vars
+    5:59  warning  'Server' is defined but never used                                                                                @typescript-eslint/no-unused-vars
+    5:67  warning  'Lock' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+    5:73  warning  'Code' is defined but never used                                                                                  @typescript-eslint/no-unused-vars
+    5:79  warning  'Database' is defined but never used                                                                              @typescript-eslint/no-unused-vars
+    5:89  warning  'Eye' is defined but never used                                                                                   @typescript-eslint/no-unused-vars
+   34:6   warning  React Hook useEffect has a missing dependency: 'handleRefresh'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+   52:3   warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/exhaustive-deps')
+  264:49  warning  'i' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  279:46  warning  'i' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  359:30  warning  'i' is defined but never used                                                                                     @typescript-eslint/no-unused-vars
+  359:33  warning  'arr' is defined but never used                                                                                   @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\ui\command-palette.tsx
+   5:18  warning  'ChevronRight' is defined but never used                                                            @typescript-eslint/no-unused-vars
+  44:7   warning  Unused eslint-disable directive (no problems were reported from 'react-hooks/set-state-in-effect')
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\components\ui\creator-easter-egg.tsx
+   6:37  warning  'ExternalLink' is defined but never used  @typescript-eslint/no-unused-vars
+  25:28  warning  'e' is defined but never used             @typescript-eslint/no-unused-vars
+
+C:\Users\Amruth\Desktop\SecureFlow AI\secureflow-ai\src\proxy.ts
+  15:9  warning  'supabase' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+✖ 144 problems (23 errors, 121 warnings)
+  1 error and 2 warnings potentially fixable with the `--fix` option.
+

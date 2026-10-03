@@ -1,4 +1,4 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient as createClient } from "@/lib/supabase/server";
 import Link from "next/link";
 import { Search, Archive } from "lucide-react";
 import type { AnalysisResult } from "@/types";

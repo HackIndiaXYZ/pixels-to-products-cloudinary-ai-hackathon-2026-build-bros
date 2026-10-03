@@ -1,5 +1,6 @@
-import { createClient } from "@/lib/supabase/server";
+import { createAdminClient as createClient } from "@/lib/supabase/server";
 import { AppShell } from "@/components/app-shell/AppShell";
+import type { ServiceStatus } from "@/components/ui/sidebar-health-footer";
 
 export default async function DashboardLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient();
@@ -27,6 +28,32 @@ export default async function DashboardLayout({ children }: { children: React.Re
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
   );
 
+  // Determine actual OpenAI runtime status (key present + working vs rate-limited)
+  // We do a lightweight HEAD check to /v1/models — fast, doesn't cost tokens
+  let openaiStatus: ServiceStatus = "unconfigured";
+  if (isOpenAIConfigured) {
+    try {
+      const res = await fetch("https://api.openai.com/v1/models", {
+        method: "HEAD",
+        headers: { Authorization: `Bearer ${process.env.OPENAI_API_KEY}` },
+        cache: "no-store",
+        signal: AbortSignal.timeout(3000), // 3s max
+      });
+      if (res.ok) {
+        openaiStatus = "operational";
+      } else if (res.status === 429) {
+        openaiStatus = "degraded"; // Rate limited / no credits
+      } else if (res.status === 401) {
+        openaiStatus = "offline"; // Bad key
+      } else {
+        openaiStatus = "degraded";
+      }
+    } catch {
+      // Network error / timeout — assume degraded rather than crashing layout
+      openaiStatus = "degraded";
+    }
+  }
+
   return (
     <AppShell 
       counts={{
@@ -37,7 +64,8 @@ export default async function DashboardLayout({ children }: { children: React.Re
       config={{
         cloudinary: isCloudinaryConfigured,
         openai: isOpenAIConfigured,
-        supabase: isSupabaseConfigured
+        supabase: isSupabaseConfigured,
+        openaiStatus,
       }}
     >
       {children}

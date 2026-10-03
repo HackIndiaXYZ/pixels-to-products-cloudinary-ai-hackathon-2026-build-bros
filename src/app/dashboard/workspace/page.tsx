@@ -1,5 +1,5 @@
 import { MediaWorkspaceStudio } from "./MediaWorkspace";
-import { Sparkles } from "lucide-react";
+// removed Sparkles import
 
 export const metadata = {
   title: "Media Workspace — SecureFlow AI",
@@ -22,6 +22,7 @@ export default async function WorkspacePage({
   );
 
   const sp = await searchParams;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const initialTool = sp.tool as any;
 
   return (

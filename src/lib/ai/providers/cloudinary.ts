@@ -2,10 +2,11 @@ import { EnginePayload } from "../security-engine";
 import { SecurityAnalysisResult } from "../schemas";
 
 export function runCloudinaryProvider(payload: EnginePayload): SecurityAnalysisResult {
-  const { cloudinaryIntelligence, resourceType } = payload;
+  const cldIntel = (payload.cloudinaryIntelligence as Record<string, unknown>) || {};
+  const resourceType = payload.resourceType || "unknown";
   
-  const tags = (cloudinaryIntelligence.tags as string[]) || [];
-  const moderation = cloudinaryIntelligence.moderation as string | undefined;
+  const tags = (cldIntel.tags as string[]) || [];
+  const moderation = cldIntel.moderation as string | undefined;
 
   const observations = tags.map((t, idx) => ({
     id: `obs-cld-${idx}`,

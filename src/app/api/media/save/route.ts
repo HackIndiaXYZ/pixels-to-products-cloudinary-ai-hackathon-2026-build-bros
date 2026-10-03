@@ -31,24 +31,9 @@ export async function POST(req: Request) {
 
     if (evError) throw new Error("Failed to persist evidence: " + evError.message);
     
-    // Persist analysis dummy record so it appears in the Evidence library
-    const { data: anData, error: anError } = await supabase.from('analyses').insert({
-      evidence_id: evData.id,
-      detected_evidence_type: "Workspace Media",
-      executive_summary: "Media processed via Workspace.",
-      risk_score: 0,
-      overall_severity: "low",
-      risk_status: "safe",
-      analysis_confidence: "high",
-      model: "workspace",
-      analysis_status: "completed"
-    }).select('id').single();
-
-    if (anError) throw new Error("Failed to persist analysis: " + anError.message);
-
     return NextResponse.json({
       success: true,
-      analysisId: anData.id
+      evidenceId: evData.id
     });
   } catch (error) {
     const msg = error instanceof Error ? error.message : String(error);

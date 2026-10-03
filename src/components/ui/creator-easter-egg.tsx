@@ -47,21 +47,30 @@ export function CreatorEasterEgg() {
   return (
     <>
       <div 
-        className="px-4 pt-5 pb-3 border-b border-[--color-rule] relative group cursor-pointer"
+        className="px-6 py-5 border-b border-[rgba(15,23,42,0.06)] relative group cursor-pointer flex items-center gap-3 h-[88px]"
         onClick={handleLogoClick}
       >
-        <Link href="/dashboard" className="block" onClick={(e) => {
-            // Prevent actual navigation if they are rapidly clicking
+        <Link href="/dashboard" className="flex items-center gap-3 w-full" onClick={(e) => {
             if (clickCount > 0) e.preventDefault();
         }}>
-          <Image
-            src="/logo.png"
-            alt="Pixels to Products — Cloudinary AI Hackathon 2026"
-            width={200}
-            height={80}
-            className="w-full h-auto object-contain transition-transform duration-200 group-active:scale-95"
-            priority
-          />
+          <div className="relative shrink-0 flex items-center justify-center transition-all duration-200 group-hover:scale-[1.02] group-hover:shadow-[0_6px_20px_rgba(15,23,42,0.08)] shadow-[0_4px_14px_rgba(15,23,42,0.05)] bg-white rounded-[14px] w-[48px] h-[48px] overflow-hidden border border-[rgba(15,23,42,0.04)]">
+            <Image
+              src="/logo.png"
+              alt="SecureFlow AI"
+              width={48}
+              height={48}
+              className="w-full h-full object-contain p-1"
+              priority
+            />
+          </div>
+          <div className="flex flex-col justify-center">
+            <h1 className="text-[13px] font-bold text-slate-900 tracking-[-0.01em] leading-tight">
+              SECUREFLOW AI
+            </h1>
+            <p className="text-[11px] font-medium text-slate-500 tracking-[0.02em]">
+              Media Intelligence
+            </p>
+          </div>
         </Link>
       </div>
 
